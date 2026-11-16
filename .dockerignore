@@ -1,0 +1,15 @@
+**/node_modules
+**/__pycache__
+**/.pytest_cache
+**/.env
+frontend/dist
+backend/leads.db*
+backend/backups
+backend/saidas
+backend/logs
+backend/instagram/sessao
+backend/instagram/comentarios
+backend/google-maps-scraper.exe
+desktop
+instalador
+.git
