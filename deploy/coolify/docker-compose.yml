@@ -12,6 +12,8 @@ services:
       context: ../..
       dockerfile: Dockerfile
     restart: unless-stopped
+    expose:
+      - "5000"
     environment:
       PROSPECTOS_AUTH_USER: ${PROSPECTOS_AUTH_USER:-casa}
       PROSPECTOS_AUTH_PASSWORD: ${SERVICE_PASSWORD_PROSPECTOS}
