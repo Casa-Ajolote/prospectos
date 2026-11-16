@@ -1,5 +1,7 @@
-# ProspectOS for Casa Ajolote, deployed as a Coolify "Docker Compose" resource built
-# from this repo (base directory "/", compose path "/deploy/coolify/docker-compose.yml").
+# ProspectOS for Casa Ajolote, deployed in Coolify as a Git repository resource with the
+# "Docker Compose" build pack: base directory "/deploy/coolify", compose location
+# "/docker-compose.yml". Coolify runs compose with --project-directory set to the base
+# directory, so the build context "../.." resolves to the repo root either way.
 #
 # The domain is assigned in Coolify to the "prospectos" service, port 5000.
 # The basic-auth password is a Coolify magic variable: generated on first deploy and

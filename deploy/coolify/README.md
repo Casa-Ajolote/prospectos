@@ -20,11 +20,12 @@ También se corrigió `requirements.txt`: upstream fija `requests==2.32.3`, pero
 
 ## Desplegar
 
-1. Coolify → proyecto de la casa → **+ New → Docker Compose**, desde el repo `Casa-Ajolote/prospectos`, rama `main`.
-2. **Compose path:** `/deploy/coolify/docker-compose.yml` · **Base directory:** `/`.
-3. Dominio del servicio `prospectos`: `https://prospectos.casa-ajolote.com:5000` (el `:5000` le dice a Coolify a qué puerto interno apuntar).
-4. En Environment Variables, llena al menos una llave de IA. Lee ahí `SERVICE_PASSWORD_PROSPECTOS` y guárdala en 1Password.
-5. Deploy. El healthcheck pega a `/healthz`.
+1. Coolify → proyecto de la casa → **+ New → Public Repository** (el fork es público). No uses "Docker Compose" a secas: esa opción no lleva Git y espera el YAML pegado.
+2. **Repository URL:** `https://github.com/Casa-Ajolote/prospectos` · **Branch:** `main` · **Build Pack:** `Docker Compose`.
+3. **Base Directory:** `/deploy/coolify` · **Docker Compose Location:** `/docker-compose.yml`. Con base `/` el build falla: Coolify resuelve el contexto `../..` desde el base directory y se sale del repo.
+4. Dominio del servicio `prospectos`: `https://prospectos.casa-ajolote.com:5000` (el `:5000` le dice a Coolify a qué puerto interno apuntar).
+5. En Environment Variables, llena al menos una llave de IA. Lee ahí `SERVICE_PASSWORD_PROSPECTOS` y guárdala en 1Password.
+6. Deploy. El healthcheck pega a `/healthz`.
 
 DNS: un registro `A` de `prospectos` al VPS (o comodín si ya existe).
 
