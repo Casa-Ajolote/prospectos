@@ -18,37 +18,37 @@ export interface EstrategiaLead {
 
 const OBJECOES_SEM_SITE: ObjecaoResposta[] = [
   {
-    objecao: '"Já tenho Instagram/WhatsApp, não preciso de site"',
+    objecao: '"Ya tengo Instagram/WhatsApp, no necesito sitio web"',
     resposta:
-      "Instagram alcança quem já te segue; o site captura quem pesquisa no Google sem te conhecer. Um completa o outro - e o site dá o endereço profissional que passa confiança na hora de fechar.",
+      "Instagram llega a quien ya te sigue; el sitio web atrapa a quien busca en Google sin conocerte. Uno complementa al otro, y el sitio te da una dirección profesional que genera confianza a la hora de cerrar.",
   },
   {
-    objecao: '"Site é caro / não é prioridade agora"',
+    objecao: '"Un sitio web es caro / no es prioridad ahorita"',
     resposta:
-      "Compare com o custo de UM cliente que pesquisou, não te achou e fechou com o concorrente. O site se paga com o primeiro cliente que ele trouxer - e dá pra começar simples e evoluir.",
+      "Compáralo con lo que te cuesta UN cliente que te buscó, no te encontró y se fue con la competencia. El sitio se paga con el primer cliente que te traiga, y se puede empezar con algo sencillo e irlo creciendo.",
   },
   {
-    objecao: '"Não tenho tempo pra cuidar disso"',
+    objecao: '"No tengo tiempo para encargarme de eso"',
     resposta:
-      "Você não vai cuidar de nada - eu cuido de tudo: textos, fotos, publicação e manutenção. Só preciso de uma conversa de 20 minutos pra entender o negócio.",
+      "No tienes que encargarte de nada: yo me ocupo de todo, textos, fotos, publicación y mantenimiento. Solo necesito una plática de 20 minutos para entender tu negocio.",
   },
 ]
 
 const OBJECOES_SITE_RUIM: ObjecaoResposta[] = [
   {
-    objecao: '"Já tenho site"',
+    objecao: '"Ya tengo sitio web"',
     resposta:
-      "A questão não é ter site, é o site trabalhar a favor. Hoje ele está afastando cliente em vez de trazer - e quem pesquisa no celular desiste em segundos quando a página não carrega direito.",
+      "La cuestión no es tener sitio, sino que el sitio trabaje a tu favor. Hoy está alejando clientes en lugar de atraerlos, y quien busca desde el celular se va en segundos si la página no carga bien.",
   },
   {
-    objecao: '"Foi um conhecido que fez"',
+    objecao: '"Me lo hizo un conocido"',
     resposta:
-      "Sem desmerecer o trabalho - tecnologia de site envelhece rápido. O que era bom há 5 anos hoje é penalizado pelo Google. Dá pra aproveitar o conteúdo e modernizar a base.",
+      "Sin demeritar su trabajo: la tecnología de los sitios web envejece rápido. Lo que funcionaba hace 5 años hoy Google lo penaliza. Se puede aprovechar el contenido y modernizar la base.",
   },
   {
-    objecao: '"Vou ver com quem fez o site"',
+    objecao: '"Lo voy a ver con quien me hizo el sitio"',
     resposta:
-      "Perfeito - e se quiser uma segunda opinião sem compromisso, posso mandar um diagnóstico gratuito do que está pegando. Aí você compara as propostas.",
+      "Perfecto. Y si quieres una segunda opinión sin compromiso, te mando un diagnóstico gratuito de lo que está fallando. Así comparas las propuestas.",
   },
 ]
 
@@ -56,12 +56,12 @@ function ganchoDeReputacao(lead: Lead): string | null {
   const nota = lead.nota ?? 0
   const avaliacoes = lead.num_avaliacoes ?? 0
   if (nota >= 4.8 && avaliacoes >= 50) {
-    return `Nota ${nota} com ${avaliacoes} avaliações: reputação de sobra e negócio claramente estabelecido - é o cliente ideal, que colhe resultado rápido de um site.`
+    return `Calificación de ${nota} con ${avaliacoes} reseñas: reputación de sobra y un negocio claramente establecido. Es el cliente ideal, que ve resultados rápidos con un sitio web.`
   }
   if (nota >= 4.5 && avaliacoes >= 10) {
-    return `Nota ${nota} com ${avaliacoes} avaliações: a reputação já existe, só não está sendo aproveitada fora do Maps.`
+    return `Calificación de ${nota} con ${avaliacoes} reseñas: la reputación ya existe, solo que no se está aprovechando fuera de Maps.`
   }
-  return `Nota ${nota} no Google - use como elogio de abertura, nunca como crítica.`
+  return `Calificación de ${nota} en Google: úsala como halago para abrir la conversación, nunca como crítica.`
 }
 
 export function montarEstrategia(lead: Lead): EstrategiaLead {
@@ -78,98 +78,98 @@ export function montarEstrategia(lead: Lead): EstrategiaLead {
 
   if (lead.site_status === "site_ok") {
     return {
-      cenario: "Site ok",
+      cenario: "Sitio web bien",
       angulo:
-        "A reanálise mostrou que o site atual está tecnicamente ok - não há problema óbvio pra vender em cima. Se ainda quiser abordar, o ângulo muda: melhoria de resultado (mais contatos, melhor posição no Google), não conserto. Caso contrário, considere ignorar o lead e focar nos mais quentes.",
-      ganchos: [reputacao ?? "Use a reputação como abertura, se abordar."].filter(Boolean) as string[],
+        "El nuevo análisis mostró que el sitio actual está técnicamente bien: no hay un problema obvio sobre el cual vender. Si aun así quieres contactarlo, el ángulo cambia: mejorar resultados (más contactos, mejor posición en Google), no arreglar algo roto. Si no, considera ignorar el lead y enfocarte en los más calientes.",
+      ganchos: [reputacao ?? "Si lo contactas, usa la reputación para abrir."].filter(Boolean) as string[],
       objecoes: [],
       proximoPasso:
-        "Prioridade baixa: este lead compete com leads sem site ou com site ruim na sua fila. Aborde só se a região/nicho for estratégico.",
+        "Prioridad baja: este lead compite en tu fila con leads sin sitio web o con un sitio deficiente. Contáctalo solo si la zona o el nicho son estratégicos.",
     }
   }
 
   if (!siteRuim) {
-    cenario = "Sem site"
+    cenario = "Sin sitio web"
     angulo =
-      "Negócio bem avaliado mas invisível pra quem pesquisa no Google fora do Maps. O argumento: cada pesquisa sem resultado é um cliente indo pro concorrente que aparece. Venda o PRIMEIRO site como a peça que falta pra reputação virar clientes novos."
+      "Negocio bien calificado pero invisible para quien busca en Google fuera de Maps. El argumento: cada búsqueda sin resultado es un cliente que se va con la competencia que sí aparece. Vende su PRIMER sitio web como la pieza que falta para que la reputación se convierta en clientes nuevos."
     objecoes = OBJECOES_SEM_SITE
     if (lead.instagram_url) {
       ganchos.push(
-        "Já tem Instagram ativo - sinal de que investe em presença digital. O site é o passo natural: dá resultado no Google e credibilidade que rede social sozinha não dá."
+        "Ya tiene Instagram activo: señal de que invierte en presencia digital. El sitio web es el paso natural: da resultados en Google y una credibilidad que las redes sociales solas no dan."
       )
     } else {
       ganchos.push(
-        "Presença digital praticamente zero - quem chega, chega por indicação. Um site abre o canal de clientes que pesquisam por conta própria."
+        "Presencia digital prácticamente nula: quien llega, llega por recomendación. Un sitio web abre el canal de clientes que buscan por su cuenta."
       )
     }
-  } else if (problemas.includes("fora do ar")) {
-    cenario = "Site fora do ar"
+  } else if ((problemas.includes("fora do ar") || problemas.includes("caído") || problemas.includes("no abre"))) {
+    cenario = "Sitio web caído"
     angulo =
-      "O site deles NÃO ABRE - quem clica hoje encontra erro. Abra a conversa como um AVISO de cortesia (gera gratidão, não parece venda) e ofereça reconstruir rápido. É o cenário de maior urgência e melhor taxa de resposta."
+      "Su sitio NO ABRE: quien hoy le da clic se encuentra con un error. Abre la conversación como un AVISO de cortesía (genera agradecimiento, no parece venta) y ofrece reconstruirlo rápido. Es el escenario de mayor urgencia y mejor tasa de respuesta."
     objecoes = OBJECOES_SITE_RUIM
     ganchos.push(
-      "Diga que tentou acessar o site e ele está fora do ar - você está avisando, não vendendo. A oferta vem depois da reação."
+      "Dile que intentaste entrar a su sitio y está caído: estás avisando, no vendiendo. La oferta va después de su reacción."
     )
-  } else if (problemas.includes("ssl") || problemas.includes("https") || problemas.includes("misto")) {
-    cenario = "Site inseguro"
+  } else if (problemas.includes("ssl") || problemas.includes("https") || problemas.includes("misto") || problemas.includes("mixto")) {
+    cenario = "Sitio web inseguro"
     angulo =
-      'O navegador marca o site deles como "não seguro" - isso espanta cliente na hora e derruba a posição no Google. Argumento: a reputação que construíram está sendo minada por um cadeado vermelho.'
+      'El navegador marca su sitio como "no seguro": eso espanta clientes al instante y lo hunde en Google. Argumento: la reputación que construyeron se está desgastando por un candado rojo.'
     objecoes = OBJECOES_SITE_RUIM
     ganchos.push(
-      'Mande um print do aviso de "não seguro" do navegador - é visual, indiscutível e ninguém quer isso associado à marca.'
+      'Mándale una captura del aviso de "no seguro" del navegador: es visual, indiscutible y nadie quiere eso asociado a su marca.'
     )
   } else if (problemas.includes("celular")) {
-    cenario = "Site não-mobile"
+    cenario = "Sitio web no apto para celular"
     angulo =
-      "O site deles quebra no celular - e a imensa maioria das pesquisas locais é feita no celular. Argumento: o site atual atende bem justamente o público que quase não existe (desktop) e falha onde o cliente está."
+      "Su sitio se ve mal en el celular, y la inmensa mayoría de las búsquedas locales se hacen desde el celular. Argumento: el sitio actual funciona bien justo para el público que casi no existe (computadora) y falla donde está el cliente."
     objecoes = OBJECOES_SITE_RUIM
     ganchos.push(
-      "Sugira que abram o próprio site no celular agora - a experiência ruim se vende sozinha como argumento."
+      "Sugiérele que abra su propio sitio en el celular en ese momento: la mala experiencia se vende sola como argumento."
     )
   } else if (problemas.includes("lento")) {
-    cenario = "Site lento"
+    cenario = "Sitio web lento"
     angulo =
-      "O site funciona, mas demora tanto pra carregar que boa parte dos visitantes desiste antes de ver qualquer coisa. Argumento: não é trocar por vaidade - é parar de perder quem já clicou. Um site rápido converte a mesma visita que hoje vai embora."
+      "El sitio funciona, pero tarda tanto en cargar que buena parte de los visitantes se va antes de ver algo. Argumento: no es cambiarlo por vanidad, es dejar de perder a quien ya le dio clic. Un sitio rápido convierte esa misma visita que hoy se va."
     objecoes = OBJECOES_SITE_RUIM
     ganchos.push(
-      "Sugira que abram o próprio site no 4G, sem Wi-Fi - a espera se vende sozinha como argumento. Se tiver o diagnóstico em PDF, a nota oficial do Google fecha a questão."
+      "Sugiérele que abra su propio sitio con datos móviles, sin wifi: la espera se vende sola como argumento. Si tienes el diagnóstico en PDF, la calificación oficial de Google cierra el tema."
     )
-  } else if (problemas.includes("construtor")) {
-    cenario = "Site de construtor"
+  } else if ((problemas.includes("construtor") || problemas.includes("constructor"))) {
+    cenario = "Sitio web de plantilla"
     angulo =
-      "O site é de modelo pronto (Wix/Canva e afins) - funciona, mas parece igual a milhares de outros e não passa a credibilidade que a reputação deles merece. Argumento: negócio com nota alta merece um site próprio, com cara própria, que apareça no Google pelo nome - não um modelo genérico."
+      "El sitio está hecho con una plantilla (Wix, Canva y similares): funciona, pero se ve igual a miles de otros y no transmite la credibilidad que su reputación merece. Argumento: un negocio con calificación alta merece un sitio propio, con identidad propia, que aparezca en Google por su nombre, no una plantilla genérica."
     objecoes = [
       {
-        objecao: '"O Wix/Canva me atende"',
+        objecao: '"Con Wix/Canva me basta"',
         resposta:
-          "Atende como um cartão improvisado atende: existe, mas não diferencia. Um site próprio tem domínio profissional, carrega mais rápido, posiciona melhor no Google e passa a impressão de negócio estabelecido - que é o que a nota de vocês já diz.",
+          "Te basta como basta una tarjeta improvisada: existe, pero no te distingue. Un sitio propio tiene dominio profesional, carga más rápido, se posiciona mejor en Google y da la impresión de negocio establecido, que es justo lo que ya dice tu calificación.",
       },
       {
-        objecao: '"Eu mesmo atualizo o meu, é prático"',
+        objecao: '"Yo mismo lo actualizo, es práctico"',
         resposta:
-          "Isso continua igual - entrego com painel simples pra você editar o que quiser. A diferença está na base: design exclusivo, domínio próprio e estrutura que o Google leva a sério.",
+          "Eso sigue igual: te lo entrego con un panel sencillo para que edites lo que quieras. La diferencia está en la base: diseño exclusivo, dominio propio y una estructura que Google toma en serio.",
       },
       {
-        objecao: '"Não quero pagar mensalidade de novo"',
+        objecao: '"No quiero volver a pagar una mensualidad"',
         resposta:
-          "O construtor também cobra mensalidade pra tirar a marca deles e usar domínio. Muitas vezes o site próprio custa parecido - só que o resultado é de outro nível.",
+          "La plataforma también te cobra mensualidad para quitar su marca y usar tu dominio. Muchas veces el sitio propio cuesta parecido, solo que el resultado es de otro nivel.",
       },
     ]
     ganchos.push(
-      "Cite que dá pra notar que o site foi feito num construtor pronto - e emende com a reputação: \"um negócio com essa nota merece um site à altura\"."
+      "Menciona que se nota que el sitio se hizo con una plantilla y remata con la reputación: \"un negocio con esa calificación merece un sitio a la altura\"."
     )
-  } else if (problemas.includes("vazia")) {
-    cenario = "Site vazio"
+  } else if ((problemas.includes("vazia") || problemas.includes("vacía"))) {
+    cenario = "Sitio web vacío"
     angulo =
-      "O site existe mas está praticamente vazio - não conta o que fazem, não mostra trabalho, não convence ninguém. Argumento: hoje é um cartão de visita em branco; a proposta é transformá-lo numa página que vende."
+      "El sitio existe pero está prácticamente vacío: no cuenta qué hacen, no muestra su trabajo, no convence a nadie. Argumento: hoy es una tarjeta de presentación en blanco; la propuesta es convertirlo en una página que venda."
     objecoes = OBJECOES_SITE_RUIM
     ganchos.push(
-      "Cite algo específico que falta (serviços, fotos, botão de WhatsApp) pra mostrar que você realmente olhou o site deles."
+      "Menciona algo específico que falte (servicios, fotos, botón de WhatsApp) para demostrar que de verdad revisaste su sitio."
     )
   } else {
-    cenario = "Site com problemas"
+    cenario = "Sitio web con problemas"
     angulo =
-      "O site existe mas tem problemas técnicos que custam clientes. Aborde como diagnóstico: aponte o problema em linguagem leiga e ofereça a reformulação como solução direta."
+      "El sitio existe pero tiene problemas técnicos que le cuestan clientes. Plantéalo como diagnóstico: señala el problema en lenguaje sencillo y ofrece rehacerlo como solución directa."
     objecoes = OBJECOES_SITE_RUIM
     if (lead.site_problemas) {
       ganchos.push(`Problemas detectados: ${lead.site_problemas}.`)
@@ -178,7 +178,7 @@ export function montarEstrategia(lead: Lead): EstrategiaLead {
 
   if (siteRuim && lead.instagram_url) {
     ganchos.push(
-      "O Instagram deles pode estar mais atualizado que o site - use isso: \"seu Instagram é ótimo, mas o site não acompanha\"."
+      "Su Instagram puede estar más actualizado que su sitio; úsalo: \"tu Instagram está muy bien, pero el sitio no está a la par\"."
     )
   }
 
@@ -186,16 +186,16 @@ export function montarEstrategia(lead: Lead): EstrategiaLead {
   const faltas = lead.site_checklist?.falta ?? []
   if (siteRuim && faltas.length > 0) {
     ganchos.push(
-      `Faltas concretas detectadas no site: ${faltas.slice(0, 3).join(", ")}${faltas.length > 3 ? "..." : ""} - cite uma delas como exemplo específico.`
+      `Faltantes concretos detectados en el sitio: ${faltas.slice(0, 3).join(", ")}${faltas.length > 3 ? "..." : ""}. Menciona uno como ejemplo específico.`
     )
   }
 
   const proximoPasso =
     lead.status === "novo"
-      ? "Gere a copy de contato (ela já usa essa estratégia), revise com seu tom e mande pelo WhatsApp - e quando o lead responder, anexe o diagnóstico em PDF. Depois marque como contatado."
+      ? "Genera el mensaje de contacto (ya usa esta estrategia), ajústalo a tu tono y mándalo por WhatsApp; cuando el lead responda, adjunta el diagnóstico en PDF. Después márcalo como contactado."
       : (lead.follow_ups_enviados ?? 0) > 0
-        ? `Já foram ${lead.follow_ups_enviados} follow-up(s). Gere a copy de follow-up trazendo um elemento NOVO (prazo, exemplo pronto, diagnóstico) - repetir o mesmo argumento queima o lead.`
-        : "Lead já contatado sem resposta: gere a copy de follow-up com tom leve de lembrete e um pedido de ação fechado."
+        ? `Ya van ${lead.follow_ups_enviados} follow-up(s). Genera el mensaje de follow-up con un elemento NUEVO (fecha límite, ejemplo listo, diagnóstico): repetir el mismo argumento quema el lead.`
+        : "Lead ya contactado sin respuesta: genera el mensaje de follow-up con un tono ligero de recordatorio y una petición de acción concreta."
 
   return { cenario, angulo, ganchos, objecoes, proximoPasso }
 }

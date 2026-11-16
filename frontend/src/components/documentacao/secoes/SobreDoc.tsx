@@ -23,11 +23,11 @@ const LINKS = [
 
 export function SobreDoc() {
   return (
-    <DocSection titulo="Sobre / Contato">
+    <DocSection titulo="Acerca de / Contacto">
       <DocP>
-        Esta ferramenta foi criada para automatizar a prospecção de clientes
-        de serviços de criação de sites, combinando Google Maps e Instagram
-        num só fluxo de trabalho.
+        Esta herramienta se creó para automatizar la prospección de clientes
+        para servicios de creación de sitios web, combinando Google Maps e
+        Instagram en un solo flujo de trabajo.
       </DocP>
 
       <div className="flex flex-col gap-2 pt-2 sm:flex-row">

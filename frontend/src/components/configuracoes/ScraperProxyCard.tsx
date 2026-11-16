@@ -35,24 +35,24 @@ export function ScraperProxyCard() {
           </span>
         ) : (
           <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-            Não configurado
+            Sin configurar
           </span>
         )}
       </div>
 
       <p className="text-sm text-muted-foreground">
-        Opcional. Se as buscas no Google Maps voltarem sempre com 0
-        resultados (mesmo com o scraper rodando sem erro), o Google pode
-        estar bloqueando o seu IP. Configurar um ou mais proxies pode
-        contornar isso.
+        Opcional. Si las búsquedas en Google Maps siempre regresan 0
+        resultados (aunque el scraper corra sin errores), es posible que
+        Google esté bloqueando la IP del servidor. Configurar uno o más
+        proxies puede resolverlo.
       </p>
 
       <div className="space-y-1.5">
-        <Label>Lista de proxies (separados por vírgula)</Label>
+        <Label>Lista de proxies (separados por coma)</Label>
         <Textarea
           value={valor}
           onChange={(e) => setValor(e.target.value)}
-          placeholder="socks5://usuario:senha@host:porta,http://host2:porta2"
+          placeholder="socks5://usuario:contraseña@host:puerto,http://host2:puerto2"
           rows={2}
           className="font-mono text-xs"
         />
@@ -64,7 +64,7 @@ export function ScraperProxyCard() {
         disabled={salvar.isPending}
         onClick={handleSalvar}
       >
-        {salvar.isPending ? "Salvando..." : "Salvar"}
+        {salvar.isPending ? "Guardando..." : "Guardar"}
       </Button>
     </div>
   )

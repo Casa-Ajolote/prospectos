@@ -54,20 +54,20 @@ class ErroPlacesApi(RuntimeError):
 def _traduzir_erro_http(resposta):
     if resposta.status_code in (401, 403):
         return (
-            "A chave da Google Places API foi recusada. Confira se a chave está certa "
-            "e se a 'Places API (New)' está ativada no projeto do Google Cloud."
+            "La Google Places API rechazó la clave. Revisa que la clave sea correcta "
+            "y que la 'Places API (New)' esté activada en el proyecto de Google Cloud."
         )
     if resposta.status_code == 429:
         return (
-            "A cota da Google Places API esgotou por agora. Aguarde alguns minutos "
-            "ou aumente os limites no Google Cloud."
+            "Se agotó la cuota de la Google Places API por ahora. Espera unos minutos "
+            "o aumenta los límites en Google Cloud."
         )
     detalhe = ""
     try:
         detalhe = resposta.json().get("error", {}).get("message", "")
     except Exception:
         pass
-    return f"A Google Places API respondeu com erro {resposta.status_code}. {detalhe}".strip()
+    return f"La Google Places API respondió con error {resposta.status_code}. {detalhe}".strip()
 
 
 def _consultar_pagina(chave, corpo):
@@ -111,8 +111,8 @@ def _buscar_uma_query(chave, texto_busca, area=None):
     for _ in range(MAX_PAGINAS_POR_QUERY):
         corpo = {
             "textQuery": texto_busca,
-            "languageCode": "pt-BR",
-            "regionCode": "BR",
+            "languageCode": "es-419",
+            "regionCode": "MX",
             "pageSize": RESULTADOS_POR_PAGINA,
         }
         if area:
@@ -161,7 +161,7 @@ def buscar_com_places_api(queries, arquivo_csv, chave, area=None, callback_query
                 logger.info("places api: %r retornou %s resultado(s)", texto, len(places))
     except requests.RequestException as erro:
         raise ErroPlacesApi(
-            "Não foi possível falar com a Google Places API. Confira sua conexão com a internet."
+            "No fue posible comunicarse con la Google Places API. Revisa tu conexión a internet."
         ) from erro
     return total_encontrados
 
@@ -169,9 +169,9 @@ def buscar_com_places_api(queries, arquivo_csv, chave, area=None, callback_query
 def validar_chave_places(chave):
     """Faz uma busca mínima só pra validar a chave. Retorna (ok, mensagem_erro)."""
     try:
-        _consultar_pagina(chave, {"textQuery": "padaria em São Paulo", "pageSize": 1, "languageCode": "pt-BR"})
+        _consultar_pagina(chave, {"textQuery": "panadería en Cancún", "pageSize": 1, "languageCode": "es-419", "regionCode": "MX"})
         return True, None
     except ErroPlacesApi as erro:
         return False, str(erro)
     except requests.RequestException:
-        return False, "Não foi possível falar com a Google Places API. Confira sua conexão com a internet."
+        return False, "No fue posible comunicarse con la Google Places API. Revisa tu conexión a internet."

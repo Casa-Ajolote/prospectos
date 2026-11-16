@@ -6,8 +6,8 @@ export function GoogleMapsBanner() {
   return (
     <PageHero
       icone={<MapPin className="size-6" />}
-      titulo="Leads do Google Maps"
-      descricao="Busque empresas sem site ou com site ruim, acompanhe o funil e gerencie follow-ups com sugestões geradas por IA."
+      titulo="Leads de Google Maps"
+      descricao="Busca negocios sin sitio web o con un sitio deficiente, da seguimiento al embudo y gestiona follow-ups con sugerencias generadas por IA."
       gradiente="from-google-maps-start/85 via-google-maps-mid/85 to-google-maps-end/85"
       acoes={
         <Link to="/analytics" className={CLASSE_ACAO_HERO}>

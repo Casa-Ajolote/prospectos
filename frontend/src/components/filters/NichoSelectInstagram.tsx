@@ -17,7 +17,7 @@ export function NichoSelectInstagram({
       valor={valor}
       onChange={onChange}
       opcoes={(nichos ?? []).map((nicho) => ({ valor: nicho, label: nicho }))}
-      labelVazio="Todos os nichos"
+      labelVazio="Todos los nichos"
       placeholder="Nicho"
       className="w-[200px]"
     />

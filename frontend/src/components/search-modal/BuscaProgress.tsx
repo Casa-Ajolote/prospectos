@@ -31,7 +31,7 @@ export function BuscaProgress({ estado }: BuscaProgressProps) {
 
       {estado.etapa === "scraping" && (
         <p className="text-xs text-muted-foreground">
-          Encontradas {estado.empresas_encontradas} · Processadas{" "}
+          Encontradas {estado.empresas_encontradas} · Procesadas{" "}
           {estado.empresas_processadas}
         </p>
       )}

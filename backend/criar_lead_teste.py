@@ -35,7 +35,7 @@ def caminho_do_banco():
 
 def conectar():
     caminho = caminho_do_banco()
-    print(f"Banco: {caminho}")
+    print(f"Base de datos: {caminho}")
     return sqlite3.connect(caminho)
 
 
@@ -48,7 +48,7 @@ def remover():
         conexao.commit()
     finally:
         conexao.close()
-    print("Lead de teste removido." if apagados else "Não havia lead de teste.")
+    print("Lead de prueba eliminado." if apagados else "No había lead de prueba.")
 
 
 def criar(telefone_bruto):
@@ -56,7 +56,7 @@ def criar(telefone_bruto):
     if digitos.startswith("55") and len(digitos) in (12, 13):
         digitos = digitos[2:]
     if len(digitos) not in (10, 11):
-        print(f"Número inválido: {telefone_bruto!r}. Use DDD + número, ex: 65999998888")
+        print(f"Número inválido: {telefone_bruto!r}. Usa DDD + número, ej.: 65999998888")
         sys.exit(1)
 
     agora = datetime.now().isoformat(timespec="seconds")
@@ -67,7 +67,7 @@ def criar(telefone_bruto):
             INSERT INTO leads (place_id, nome, categoria, endereco, nota, num_avaliacoes,
                                telefone, whatsapp_link, nicho, cidade, site_status,
                                site_problemas, status, visto_em, atualizado_em)
-            VALUES (?, 'TESTE - Meu próprio número', 'Teste do cockpit', 'Sem endereço',
+            VALUES (?, 'PRUEBA - Mi propio número', 'Prueba del cockpit', 'Sin dirección',
                     5.0, 100, ?, ?, 'teste', 'Cuiabá', 'sem_site', NULL, 'novo', ?, ?)
             ON CONFLICT(place_id) DO UPDATE SET
                 telefone = excluded.telefone,
@@ -80,8 +80,8 @@ def criar(telefone_bruto):
     finally:
         conexao.close()
 
-    print(f"Lead de teste pronto com o número {digitos}.")
-    print("Abra o ProspectOS -> Google Maps -> procure por 'TESTE - Meu próprio número'.")
+    print(f"Lead de prueba listo con el número {digitos}.")
+    print("Abre ProspectOS -> Google Maps -> busca 'PRUEBA - Mi propio número'.")
 
 
 if __name__ == "__main__":

@@ -2,11 +2,11 @@ import type { StatusLead } from "@/types/lead"
 import type { PrioridadeLead } from "@/types/instagram"
 
 export const LABEL_STATUS: Record<StatusLead, string> = {
-  novo: "Novo",
-  contatado: "Contatado",
-  respondeu: "Respondeu",
-  fechou: "Fechou",
-  recusou: "Recusou",
+  novo: "Nuevo",
+  contatado: "Contactado",
+  respondeu: "Respondió",
+  fechou: "Cerrado",
+  recusou: "Rechazó",
   ignorado: "Ignorado",
 }
 
@@ -20,10 +20,10 @@ export const COR_STATUS: Record<StatusLead, string> = {
 }
 
 export const LABEL_PRIORIDADE: Record<PrioridadeLead, string> = {
-  alta: "Alta prioridade",
-  media: "Média prioridade",
-  baixa: "Baixa prioridade",
-  descartado: "Descartado (privado)",
+  alta: "Prioridad alta",
+  media: "Prioridad media",
+  baixa: "Prioridad baja",
+  descartado: "Descartado (cuenta privada)",
 }
 
 export const COR_PRIORIDADE: Record<PrioridadeLead, string> = {
@@ -34,10 +34,10 @@ export const COR_PRIORIDADE: Record<PrioridadeLead, string> = {
 }
 
 export const OPCOES_NOTA_MINIMA = [
-  { valor: "", label: "Qualquer nota" },
-  { valor: "4", label: "Nota ≥ 4.0" },
-  { valor: "4.5", label: "Nota ≥ 4.5" },
-  { valor: "5", label: "Nota = 5.0" },
+  { valor: "", label: "Cualquier calificación" },
+  { valor: "4", label: "Calificación ≥ 4.0" },
+  { valor: "4.5", label: "Calificación ≥ 4.5" },
+  { valor: "5", label: "Calificación = 5.0" },
 ] as const
 
 const PESO_PRIORIDADE: Record<PrioridadeLead, number> = {

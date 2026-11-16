@@ -18,27 +18,27 @@ export function EmptyState({
       {filtrosEmUso ? (
         <>
           <p className="text-sm text-muted-foreground">
-            Nenhum lead encontrado com esses filtros.
+            No se encontraron leads con estos filtros.
           </p>
           <Button variant="outline" size="sm" onClick={onLimparFiltros}>
-            Limpar filtros
+            Limpiar filtros
           </Button>
         </>
       ) : (
         <>
           <p className="text-sm text-muted-foreground">
-            Nenhuma busca foi feita ainda.
+            Todavía no has hecho ninguna búsqueda.
           </p>
           <p className="max-w-xs text-xs text-muted-foreground">
-            Cada linha da busca é um nicho + cidade, por exemplo:{" "}
+            Cada línea de la búsqueda es un nicho + ciudad, por ejemplo:{" "}
             <span className="font-medium text-foreground">
-              "clínica de estética em Londrina"
+              "dentista en Cancún"
             </span>
           </p>
           {onNovaBusca && (
             <Button size="sm" onClick={onNovaBusca}>
               <Plus className="size-4" />
-              Nova busca
+              Nueva búsqueda
             </Button>
           )}
         </>

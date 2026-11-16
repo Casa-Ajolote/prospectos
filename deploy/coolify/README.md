@@ -33,7 +33,7 @@ DNS: un registro `A` de `prospectos` al VPS (o comodín si ya existe).
 - **Instagram:** usa una cuenta personal con `instagrapi`. Desde la IP de un datacenter el riesgo de checkpoint o baneo es alto. El login se hace dentro del contenedor (`python instagram/login.py <usuario>` desde la terminal de Coolify) y la sesión queda en `/data`. Úsalo solo con una cuenta desechable.
 - **Cockpit de WhatsApp:** la lectura automática solo existe en la app de escritorio (Electron). En la web queda el modo manual.
 - **Las llaves que se guardan desde la interfaz** quedan en el SQLite, porque en Linux sin escritorio no hay cofre de credenciales. Por eso conviene ponerlas como variables de Coolify.
-- **Interfaz en portugués de Brasil.** Los mensajes de IA y la estrategia también salen en portugués hasta que se ajusten los prompts de `backend/ia.py`.
+- **Idioma:** la interfaz, los prompts de IA, el PDF y los mensajes del backend están en español de México. Los valores que se guardan en la base (estados `novo`, `contatado`…, `situacao_site`) siguen en portugués a propósito: son datos, no texto, y cambiarlos rompería los leads existentes y los merges de upstream. Los leads capturados antes de la traducción conservan sus problemas de sitio en portugués; el PDF y la estrategia aceptan los dos.
 - **Respaldo:** la app guarda copias en `/data/backups`, pero todas viven en el mismo VPS.
 - **Scraping:** raspar Maps e Instagram viola los términos de esas plataformas. Es un riesgo operativo de la casa.
 
@@ -44,4 +44,4 @@ git fetch upstream
 git merge upstream/main
 ```
 
-Los parches tocan pocas líneas de `app.py`, `paths.py`, `jobs.py`, `processar.py` y `rotas_conversa.py`, a propósito, para que los merges sean fáciles.
+La traducción al español toca casi todos los archivos de texto, así que los merges de upstream van a tener conflictos en cadenas. Resuélvelos conservando la versión en español y traduciendo lo nuevo.

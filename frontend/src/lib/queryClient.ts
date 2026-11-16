@@ -5,7 +5,7 @@ import { ApiError } from "@/services/httpClient"
 function mensagemDoErro(erro: unknown): string {
   if (erro instanceof ApiError) return erro.message
   if (erro instanceof Error) return erro.message
-  return "Ocorreu um erro inesperado."
+  return "Ocurrió un error inesperado."
 }
 
 export const queryClient = new QueryClient({

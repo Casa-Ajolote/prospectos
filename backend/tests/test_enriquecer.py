@@ -133,7 +133,7 @@ class TestInterrupcoes:
         usar_cliente(monkeypatch, cliente)
         caminho = criar_json_comentarios(tmp_path, ["user1", "user2"])
 
-        with pytest.raises(enriquecer_perfis.AnaliseInterrompida, match="sessão do Instagram expirou"):
+        with pytest.raises(enriquecer_perfis.AnaliseInterrompida, match="sesión de Instagram expiró"):
             enriquecer_perfis.enriquecer_perfis(caminho)
         assert cliente.consultados == ["user1"]
 

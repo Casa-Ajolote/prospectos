@@ -11,7 +11,7 @@ export function PrioridadeBadge({ prioridade }: PrioridadeBadgeProps) {
   if (!prioridade) {
     return (
       <Badge variant="outline" className="font-medium uppercase tracking-wide">
-        Pendente de análise
+        Pendiente de análisis
       </Badge>
     )
   }

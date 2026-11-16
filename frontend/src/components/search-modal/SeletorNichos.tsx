@@ -47,7 +47,7 @@ export function SeletorNichos({
     }
     if (selecionados.length >= LIMITE_NICHOS_POR_BUSCA) {
       toast.warning(
-        `Máximo de ${LIMITE_NICHOS_POR_BUSCA} nichos por busca - cada nicho é uma varredura completa em cada área.`
+        `Máximo ${LIMITE_NICHOS_POR_BUSCA} nichos por búsqueda: cada nicho es un barrido completo en cada área.`
       )
       return
     }
@@ -65,7 +65,7 @@ export function SeletorNichos({
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-2">
         <p className="text-xs font-medium text-muted-foreground">
-          Nichos a buscar em cada área
+          Nichos a buscar en cada área
         </p>
         <span
           className={cn(
@@ -88,7 +88,7 @@ export function SeletorNichos({
               onClick={() => alternar(nicho)}
               disabled={desabilitado}
               className="inline-flex items-center gap-1 rounded-full bg-primary/10 py-1 pl-2.5 pr-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/20"
-              aria-label={`Remover nicho ${nicho}`}
+              aria-label={`Quitar nicho ${nicho}`}
             >
               {nicho}
               <X className="size-3" />
@@ -103,7 +103,7 @@ export function SeletorNichos({
           <Input
             value={filtro}
             onChange={(e) => setFiltro(e.target.value)}
-            placeholder="Filtrar nichos (ex: estética, advocacia...)"
+            placeholder="Filtrar nichos (p. ej.: dentista, abogados...)"
             disabled={desabilitado}
             className="pl-8"
           />
@@ -113,8 +113,8 @@ export function SeletorNichos({
       <div className="max-h-52 space-y-3 overflow-y-auto rounded-lg border border-border bg-muted/20 p-3">
         {categoriasFiltradas.length === 0 ? (
           <p className="py-2 text-center text-xs text-muted-foreground">
-            Nenhum nicho do catálogo bate com "{filtro}" - adicione como
-            personalizado logo abaixo.
+            Ningún nicho del catálogo coincide con "{filtro}": agrégalo como
+            personalizado aquí abajo.
           </p>
         ) : (
           categoriasFiltradas.map((categoria) => (
@@ -160,7 +160,7 @@ export function SeletorNichos({
               adicionarPersonalizado()
             }
           }}
-          placeholder="Nicho fora do catálogo? Digite e adicione..."
+          placeholder="¿Nicho fuera del catálogo? Escríbelo y agrégalo..."
           disabled={desabilitado}
         />
         <Button
@@ -168,7 +168,7 @@ export function SeletorNichos({
           variant="outline"
           onClick={adicionarPersonalizado}
           disabled={desabilitado || !personalizado.trim()}
-          aria-label="Adicionar nicho personalizado"
+          aria-label="Agregar nicho personalizado"
         >
           <Plus className="size-4" />
         </Button>

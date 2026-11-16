@@ -26,11 +26,11 @@ export function LeadTagsFollowupForm({
   return (
     <div className="space-y-3">
       <div className="space-y-1.5">
-        <Label>Tags</Label>
+        <Label>Etiquetas</Label>
         <Input
           value={tags}
           onChange={(e) => setTags(e.target.value)}
-          placeholder="urgente, zona sul, ..."
+          placeholder="urgente, zona hotelera, ..."
         />
       </div>
       <div className="space-y-1.5">
@@ -49,7 +49,7 @@ export function LeadTagsFollowupForm({
           onSalvar({ tags, proximoFollowup: followup || null })
         }
       >
-        {salvando ? "Salvando..." : "Salvar tags e follow-up"}
+        {salvando ? "Guardando..." : "Guardar tags y follow-up"}
       </Button>
     </div>
   )

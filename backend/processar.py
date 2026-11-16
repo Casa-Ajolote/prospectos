@@ -82,7 +82,7 @@ USER_AGENT_NAVEGADOR = (
 CONSTRUTORES_POR_URL = {
     ".wixsite.com": "Wix",
     "sites.google.com": "Google Sites",
-    ".negocio.site": "Google Meu Negócio",
+    ".negocio.site": "Google Mi Negocio",
     ".webnode.page": "Webnode",
     ".webnode.com.br": "Webnode",
     "canva.site": "Canva",
@@ -101,7 +101,7 @@ CONSTRUTORES_POR_HTML = {
     'generator" content="site123': "SITE123",
     'generator" content="webnode': "Webnode",
     "cdn.usite.pro": "uSite",
-    "websitebuilder": "construtor de site",
+    "websitebuilder": "constructor de sitios",
 }
 
 
@@ -142,6 +142,17 @@ def _e_falha_de_dns(erro):
 
 # Itens do raio-X: (nome exibido, função html/url_final → bool "tem")
 REGEX_CEP = re.compile(r"\b\d{5}-\d{3}\b")
+# México: código postal de 5 dígitos, só quando vem marcado como "C.P." (5 dígitos soltos dão falso positivo)
+REGEX_CP_MX = re.compile(r"\bC\.?\s?P\.?\s*:?\s*\d{5}\b", re.IGNORECASE)
+
+
+def _pais_mx():
+    return os.environ.get("PROSPECTOS_PAIS", "BR").upper() == "MX"
+
+
+def _regiao_busca():
+    return "mx-es" if _pais_mx() else "br-pt"
+
 REGEX_ANO_COPYRIGHT = re.compile(r"(?:©|&copy;|copyright)\D{0,20}(20\d{2})", re.IGNORECASE)
 
 
@@ -160,16 +171,16 @@ def montar_checklist_site(html, url_final):
     )
 
     itens = [
-        ("botão de WhatsApp", ("wa.me" in html_min or "api.whatsapp.com" in html_min or "whatsapp" in html_min)),
-        ("telefone clicável", 'href="tel:' in html_min or "href='tel:" in html_min),
-        ("e-mail de contato", "mailto:" in html_min),
-        ("link para redes sociais", "instagram.com" in html_min or "facebook.com" in html_min),
-        ("endereço ou mapa", ("google.com/maps" in html_min or "maps.google" in html_min
-                              or "<address" in html_min or bool(REGEX_CEP.search(html or "")))),
-        ("fotos do negócio", imagens >= 3),
-        ("título descritivo na aba", len(titulo_texto) > 8 and titulo_texto.lower() not in ("home", "index", "início", "untitled")),
-        ("descrição para aparecer no Google", bool(descricao)),
-        ("ícone na aba do navegador (favicon)", bool(re.search(r'rel=["\'](?:shortcut )?icon', html_min))),
+        ("botón de WhatsApp", ("wa.me" in html_min or "api.whatsapp.com" in html_min or "whatsapp" in html_min)),
+        ("teléfono con clic para llamar", 'href="tel:' in html_min or "href='tel:" in html_min),
+        ("correo de contacto", "mailto:" in html_min),
+        ("enlace a redes sociales", "instagram.com" in html_min or "facebook.com" in html_min),
+        ("dirección o mapa", ("google.com/maps" in html_min or "maps.google" in html_min
+                              or "<address" in html_min or bool(REGEX_CEP.search(html or "")) or (_pais_mx() and bool(REGEX_CP_MX.search(html or ""))))),
+        ("fotos del negocio", imagens >= 3),
+        ("título descriptivo en la pestaña", len(titulo_texto) > 8 and titulo_texto.lower() not in ("home", "index", "início", "inicio", "untitled")),
+        ("descripción para aparecer en Google", bool(descricao)),
+        ("ícono en la pestaña del navegador (favicon)", bool(re.search(r'rel=["\'](?:shortcut )?icon', html_min))),
     ]
 
     checklist = {
@@ -227,7 +238,7 @@ def avaliar_site_completo(url):
     try:
         resposta = requisitar_com_retentativa(url_completa)
     except SSLError:
-        problemas.append("certificado de segurança (SSL) inválido ou vencido")
+        problemas.append("certificado de seguridad (SSL) inválido o vencido")
         try:
             import urllib3
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -249,43 +260,43 @@ def avaliar_site_completo(url):
 
     if resposta is None:
         motivo = (
-            "domínio não encontrado (pode ter expirado)" if dominio_morto
-            else "site fora do ar (não abre)"
+            "dominio no encontrado (puede haber expirado)" if dominio_morto
+            else "sitio caído (no abre)"
         )
         return "ruim", problemas + [motivo], None
 
     if resposta.status_code >= 400:
-        problemas.append(f"site responde com erro (HTTP {resposta.status_code})")
+        problemas.append(f"el sitio responde con error (HTTP {resposta.status_code})")
 
     # site que demora mas "funciona" também é lead: lentidão espanta visitante
     tempo_resposta = getattr(resposta, "elapsed", None)
     if tempo_resposta is not None and tempo_resposta.total_seconds() > LIMITE_RESPOSTA_LENTA_SEGUNDOS:
         problemas.append(
-            f"site muito lento para responder ({tempo_resposta.total_seconds():.0f}s)"
+            f"sitio muy lento para responder ({tempo_resposta.total_seconds():.0f}s)"
         )
 
     html = (resposta.text or "")[:200_000]
     url_final = resposta.url.lower()
 
     if url_final.startswith("http://"):
-        problemas.append("sem HTTPS (aparece como 'não seguro' no navegador)")
+        problemas.append("sin HTTPS (aparece como 'no seguro' en el navegador)")
     elif url_final.startswith("https://") and REGEX_RECURSO_HTTP.search(html):
-        problemas.append("página segura carregando itens inseguros (conteúdo misto)")
+        problemas.append("página segura cargando elementos inseguros (contenido mixto)")
 
     if "viewport" not in html.lower():
-        problemas.append("não adaptado para celular")
+        problemas.append("no adaptado para celular")
     if len(html.strip()) < 800:
-        problemas.append("página quase vazia")
+        problemas.append("página casi vacía")
 
     construtor = detectar_construtor_generico(resposta.url, html)
     if construtor:
-        problemas.append(f"feito em construtor pronto ({construtor})")
+        problemas.append(f"hecho con un constructor de plantillas ({construtor})")
 
     checklist, ano_copyright = montar_checklist_site(html, url_final)
 
     ano_atual = date.today().year
     if ano_copyright and ano_copyright <= ano_atual - 2:
-        problemas.append(f"sem sinal de atualização desde {ano_copyright}")
+        problemas.append(f"sin señales de actualización desde {ano_copyright}")
 
     return ("ruim", problemas, checklist) if problemas else ("ok", [], checklist)
 
@@ -345,13 +356,13 @@ def capturar_conteudo_site(url):
 
     partes = []
     if titulo:
-        partes.append(f"Título da página: {titulo}")
+        partes.append(f"Título de la página: {titulo}")
     if descricao:
-        partes.append(f"Descrição (meta): {descricao}")
+        partes.append(f"Descripción (meta): {descricao}")
     if cabecalhos:
-        partes.append("Cabeçalhos: " + " | ".join(c for c in cabecalhos if c))
+        partes.append("Encabezados: " + " | ".join(c for c in cabecalhos if c))
     if corpo:
-        partes.append(f"Trecho do texto visível: {corpo}")
+        partes.append(f"Fragmento del texto visible: {corpo}")
     return "\n".join(partes)
 
 
@@ -373,7 +384,7 @@ def buscar_instagram_da_empresa(nome, cidade_ou_endereco=""):
     consulta = f"{nome} {cidade_ou_endereco} instagram".strip()
     try:
         resultados = DDGS(timeout=BUSCA_TIMEOUT_SEGUNDOS).text(
-            consulta, max_results=5, region="br-pt", backend=BUSCA_BACKENDS
+            consulta, max_results=5, region=_regiao_busca(), backend=BUSCA_BACKENDS
         )
     except Exception:
         return None
@@ -404,11 +415,11 @@ def buscar_site_da_empresa(nome, cidade_ou_endereco=""):
     except ImportError:
         return None
 
-    consulta = f"{nome} {cidade_ou_endereco} site oficial".strip()
+    consulta = f"{nome} {cidade_ou_endereco} {'sitio oficial' if _pais_mx() else 'site oficial'}".strip()
 
     try:
         resultados = DDGS(timeout=BUSCA_TIMEOUT_SEGUNDOS).text(
-            consulta, max_results=5, region="br-pt", backend=BUSCA_BACKENDS
+            consulta, max_results=5, region=_regiao_busca(), backend=BUSCA_BACKENDS
         )
     except Exception:
         return None  # falha na busca não deve travar o processamento do lead
@@ -720,12 +731,14 @@ def extrair_nicho_e_cidade(query_origem):
     if not texto:
         return "", ""
 
-    indice = texto.rfind(" em ")
+    # aceita o separador em espanhol (" en ") e o antigo em português (" em ");
+    # vale a última ocorrência de qualquer um dos dois
+    indice, separador = max((texto.rfind(sep), sep) for sep in (" en ", " em "))
     if indice == -1:
         return texto, ""
 
     nicho = texto[:indice].strip()
-    cidade = texto[indice + len(" em "):].strip()
+    cidade = texto[indice + len(separador):].strip()
     return nicho, cidade
 
 
@@ -1055,12 +1068,12 @@ def processar(caminho_csv_bruto, caminho_queries=CAMINHO_QUERIES_PADRAO, callbac
         escritor.writeheader()
         escritor.writerows(novos)
 
-    print(f"Leads novos encontrados nesta rodada: {len(novos)} ({novos_sem_site} sem site, {novos_site_ruim} com site ruim)")
+    print(f"Leads nuevos encontrados en esta ronda: {len(novos)} ({novos_sem_site} sin sitio, {novos_site_ruim} con sitio deficiente)")
     if descartados_por_site_ok:
-        print(f"Descartados por já terem um site decente: {descartados_por_site_ok}")
+        print(f"Descartados por ya tener un sitio decente: {descartados_por_site_ok}")
     if erros_de_linha:
-        print(f"Atenção: {erros_de_linha} linha(s) do CSV tiveram erro e foram puladas (veja logs/prospeccao.log).")
-    print(f"Planilha gerada: {caminho_saida}")
+        print(f"Atención: {erros_de_linha} fila(s) del CSV tuvieron error y se omitieron (consulta logs/prospeccao.log).")
+    print(f"Hoja generada: {caminho_saida}")
 
     return {
         "total_no_csv": total_no_csv,
@@ -1076,7 +1089,7 @@ def processar(caminho_csv_bruto, caminho_queries=CAMINHO_QUERIES_PADRAO, callbac
 
 if __name__ == "__main__":
     if len(sys.argv) not in (2, 3):
-        print("Uso: py processar.py <caminho_do_csv_bruto> [caminho_queries.txt]")
+        print("Uso: py processar.py <ruta_del_csv_bruto> [ruta_queries.txt]")
         sys.exit(1)
 
     if len(sys.argv) == 3:
