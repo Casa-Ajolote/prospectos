@@ -673,3 +673,18 @@ class TestIndices:
         cx = sqlite3.connect(":memory:")
         processar.preparar_banco(cx)
         processar.preparar_banco(cx)  # nao pode quebrar rodando de novo
+
+
+class TestTelefoneMexico:
+    def test_numero_nacional(self, monkeypatch):
+        monkeypatch.setenv("PROSPECTOS_PAIS", "MX")
+        assert telefone_para_whatsapp("998 125 6680") == "https://wa.me/529981256680"
+
+    def test_com_ddi(self, monkeypatch):
+        monkeypatch.setenv("PROSPECTOS_PAIS", "MX")
+        assert telefone_para_whatsapp("+52 998 125 6680") == "https://wa.me/529981256680"
+        assert telefone_para_whatsapp("+52 1 998 125 6680") == "https://wa.me/529981256680"
+
+    def test_invalido(self, monkeypatch):
+        monkeypatch.setenv("PROSPECTOS_PAIS", "MX")
+        assert telefone_para_whatsapp("12345") is None

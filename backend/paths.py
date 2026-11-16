@@ -35,6 +35,10 @@ else:
     DIR_RECURSOS = _DIR_FONTE
     DIR_DADOS = _DIR_FONTE
 
+# servidor/contêiner: os dados vão para um volume persistente fora do código
+if os.environ.get("PROSPECTOS_DATA_DIR"):
+    DIR_DADOS = Path(os.environ["PROSPECTOS_DATA_DIR"])
+
 
 def caminho_recurso(*partes):
     """Caminho de um recurso read-only distribuído junto com o app."""

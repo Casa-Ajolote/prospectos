@@ -319,10 +319,10 @@ def _executar_scraper(arquivo_bruto, ambiente, flags_extras=()):
     """Roda o binário do scraper uma vez, com progresso ao vivo.
     Retorna None em sucesso, ou a mensagem de erro amigável em falha."""
     comando_scraper = [
-        str(caminho_recurso("google-maps-scraper.exe")),
+        os.environ.get("PROSPECTOS_SCRAPER_PATH") or str(caminho_recurso("google-maps-scraper.exe")),
         "-input", str(DIR_DADOS / "queries.txt"),
         "-results", str(arquivo_bruto),
-        "-lang", "pt",
+        "-lang", os.environ.get("PROSPECTOS_MAPS_LANG", "pt"),
         "-depth", "5",
         "-exit-on-inactivity", "3m",
         *flags_extras,

@@ -15,6 +15,7 @@ Como as peças se encaixam:
 import hashlib
 import json
 import logging
+import os
 import re
 import sqlite3
 from datetime import datetime
@@ -70,6 +71,12 @@ def normalizar_telefone(bruto):
     O banco guarda "65996757327" (DDD + número) e o WhatsApp reporta
     "5565996757327" - sem normalizar os dois lados, nenhum número casaria."""
     digitos = re.sub(r"\D", "", bruto or "")
+    if os.environ.get("PROSPECTOS_PAIS", "BR").upper() == "MX":
+        if digitos.startswith("521") and len(digitos) == 13:
+            digitos = digitos[3:]
+        elif digitos.startswith("52") and len(digitos) == 12:
+            digitos = digitos[2:]
+        return digitos or None
     if digitos.startswith("55") and len(digitos) in (12, 13):
         digitos = digitos[2:]
     return digitos or None

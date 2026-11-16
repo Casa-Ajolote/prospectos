@@ -58,6 +58,39 @@ import rotas_instagram
 import rotas_leads
 
 app = Flask(__name__)
+
+# ---------------------------------------------------------------------------
+# Basic auth opcional para quando o app roda num servidor exposto.
+# Local (sem as variáveis), nada muda.
+# ---------------------------------------------------------------------------
+_AUTH_USUARIO = os.environ.get("PROSPECTOS_AUTH_USER")
+_AUTH_SENHA = os.environ.get("PROSPECTOS_AUTH_PASSWORD")
+
+
+@app.before_request
+def exigir_basic_auth():
+    if not (_AUTH_USUARIO and _AUTH_SENHA):
+        return None
+    import hmac
+
+    from flask import Response, request
+
+    if request.path == "/healthz":
+        return None
+    auth = request.authorization
+    if (
+        auth
+        and hmac.compare_digest(auth.username or "", _AUTH_USUARIO)
+        and hmac.compare_digest(auth.password or "", _AUTH_SENHA)
+    ):
+        return None
+    return Response("Autenticação necessária.", 401, {"WWW-Authenticate": 'Basic realm="ProspectOS"'})
+
+
+@app.route("/healthz")
+def healthz():
+    return jsonify({"ok": True})
+
 app.register_blueprint(rotas_leads.bp)
 app.register_blueprint(rotas_instagram.bp)
 app.register_blueprint(rotas_analytics.bp)
@@ -145,7 +178,10 @@ if __name__ == "__main__":
         # dev com auto-reload do Flask, comportamento de sempre
         app.run(debug=True, port=5000)
     else:
-        porta = escolher_porta(5000)
+        # servidor/contêiner: PROSPECTOS_HOST=0.0.0.0 e porta fixa
+        host = os.environ.get("PROSPECTOS_HOST", "127.0.0.1")
+        porta_env = os.environ.get("PROSPECTOS_PORT")
+        porta = int(porta_env) if porta_env else escolher_porta(5000)
         # anuncia a porta pra quem iniciou o processo (shell do app de desktop lê
         # o stdout; o arquivo cobre quem preferir ler do disco). Empacotado sem
         # console, sys.stdout pode ser None - o arquivo vira a fonte da verdade.
@@ -165,4 +201,4 @@ if __name__ == "__main__":
         # waitress: servidor WSGI de produção (o dev server do Flask não é pra isso)
         from waitress import serve
 
-        serve(app, host="127.0.0.1", port=porta, threads=8)
+        serve(app, host=host, port=porta, threads=8)

@@ -1,0 +1,35 @@
+# ProspectOS for Casa Ajolote, deployed as a Coolify "Docker Compose" resource built
+# from this repo (base directory "/", compose path "/deploy/coolify/docker-compose.yml").
+#
+# The domain is assigned in Coolify to the "prospectos" service, port 5000.
+# The basic-auth password is a Coolify magic variable: generated on first deploy and
+# kept across redeploys. Read it in Coolify → Environment Variables; nobody types it.
+# AI keys (Gemini/Groq/NVIDIA) start empty and are filled in Coolify, never in git.
+
+services:
+  prospectos:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      PROSPECTOS_AUTH_USER: ${PROSPECTOS_AUTH_USER:-casa}
+      PROSPECTOS_AUTH_PASSWORD: ${SERVICE_PASSWORD_PROSPECTOS}
+      PROSPECTOS_MAPS_LANG: ${PROSPECTOS_MAPS_LANG:-es}
+      PROSPECTOS_PAIS: ${PROSPECTOS_PAIS:-MX}
+      PROSPECCAO_LOG_LEVEL: ${PROSPECCAO_LOG_LEVEL:-INFO}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      NVIDIA_API_KEY: ${NVIDIA_API_KEY:-}
+    volumes:
+      - prospectos-data:/data
+    shm_size: 1gb
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:5000/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+volumes:
+  prospectos-data:

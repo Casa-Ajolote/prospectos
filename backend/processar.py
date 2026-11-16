@@ -12,6 +12,7 @@ Uso:
 import csv
 import json
 import logging
+import os
 import re
 import sqlite3
 import sys
@@ -772,11 +773,16 @@ def mapear_queries_por_input_id(caminho_csv_bruto, caminho_queries):
 
 
 def telefone_para_whatsapp(telefone_bruto):
-    """Converte um telefone brasileiro (como vem do Google Maps) num link wa.me. Retorna None se não der pra usar."""
+    """Converte um telefone brasileiro (como vem do Google Maps) num link wa.me. Retorna None se não der pra usar.
+
+    Com PROSPECTOS_PAIS=MX, trata o número como mexicano (10 dígitos, DDI 52)."""
     digitos = re.sub(r"\D", "", telefone_bruto or "")
 
     if not digitos:
         return None
+
+    if os.environ.get("PROSPECTOS_PAIS", "BR").upper() == "MX":
+        return _telefone_mx_para_whatsapp(digitos)
 
     # remove o "0" de discagem interurbana, se vier na frente (ex: 0xx41...)
     if digitos.startswith("0"):
@@ -797,6 +803,17 @@ def telefone_para_whatsapp(telefone_bruto):
         numero = "9" + numero
 
     return f"https://wa.me/55{ddd}{numero}"
+
+
+def _telefone_mx_para_whatsapp(digitos):
+    """México: 10 dígitos nacionais. Remove o DDI 52 (e o antigo "1" de celular) se vier."""
+    if digitos.startswith("521") and len(digitos) == 13:
+        digitos = digitos[3:]
+    elif digitos.startswith("52") and len(digitos) == 12:
+        digitos = digitos[2:]
+    if len(digitos) != 10:
+        return None
+    return f"https://wa.me/52{digitos}"
 
 
 def linha_qualifica(linha):
