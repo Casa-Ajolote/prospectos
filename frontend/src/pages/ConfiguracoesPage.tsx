@@ -10,7 +10,8 @@ import { ScraperProxyCard } from "@/components/configuracoes/ScraperProxyCard"
 import { SomConfigCard } from "@/components/configuracoes/SomConfigCard"
 import { useConfiguracoes } from "@/hooks/useConfiguracoes"
 
-const TITULOS: Record<"gemini" | "groq" | "nvidia" | "pagespeed", string> = {
+const TITULOS: Record<"anthropic" | "gemini" | "groq" | "nvidia" | "pagespeed", string> = {
+  anthropic: "Anthropic (Claude)",
   gemini: "Google Gemini",
   groq: "Groq",
   nvidia: "NVIDIA",
@@ -49,7 +50,7 @@ export function ConfiguracoesPage() {
           </h2>
           <p className="text-sm text-muted-foreground">
             Las claves de abajo se usan para generar mensajes con IA. El sistema
-            prueba cada proveedor en el orden Gemini → Groq → NVIDIA y pasa al
+            prueba cada proveedor en el orden Anthropic → Gemini → Groq → NVIDIA y pasa al
             siguiente automáticamente si alguno falla o se queda sin cuota.
           </p>
         </div>
@@ -62,7 +63,7 @@ export function ConfiguracoesPage() {
           </div>
         ) : (
           <div className="space-y-3">
-            {(["gemini", "groq", "nvidia", "pagespeed"] as const).map((provedor) => (
+            {(["anthropic", "gemini", "groq", "nvidia", "pagespeed"] as const).map((provedor) => (
               <ProvedorApiCard
                 key={provedor}
                 provedor={provedor}

@@ -10,6 +10,7 @@ from constantes import MAX_CARACTERES_TEXTO_TEMPLATE, MAX_CARACTERES_TITULO_TEMP
 bp = Blueprint("config", __name__)
 
 LINKS_OBTER_CHAVE = {
+    "anthropic": "https://platform.claude.com/settings/keys",
     "gemini": "https://aistudio.google.com/apikey",
     "groq": "https://console.groq.com/keys",
     "nvidia": "https://build.nvidia.com",

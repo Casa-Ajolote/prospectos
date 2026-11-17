@@ -1,4 +1,4 @@
-"""Integração com os provedores de IA (Gemini, Groq, NVIDIA).
+"""Integração com os provedores de IA (Anthropic, Gemini, Groq, NVIDIA).
 
 Arquitetura dos prompts:
 - Cada geração envia um par (system, user): o SYSTEM carrega a persona do
@@ -37,13 +37,17 @@ logger = logging.getLogger(__name__)
 
 # Ordem de preferência dos provedores de IA - se o primeiro falhar/estourar cota,
 # tenta o próximo automaticamente. Cada usuário pode configurar 1, 2 ou os 3.
-ORDEM_PROVEDORES_IA = ["gemini", "groq", "nvidia"]
+ORDEM_PROVEDORES_IA = ["anthropic", "gemini", "groq", "nvidia"]
+
+# Modelo do Claude; dá pra trocar sem rebuild com ANTHROPIC_MODEL no ambiente.
+MODELO_ANTHROPIC_PADRAO = "claude-opus-5-5"
 
 # Timeout por chamada de IA. Sem ele, um provedor que pendura a conexão travaria
 # a geração pra sempre e o fallback nunca chegaria ao próximo provedor.
 IA_TIMEOUT_SEGUNDOS = 45
 
 NOMES_AMIGAVEIS_PROVEDOR = {
+    "anthropic": "Anthropic (Claude)",
     "gemini": "Google Gemini",
     "groq": "Groq",
     "nvidia": "NVIDIA Build",
@@ -116,6 +120,45 @@ def traduzir_erro_ia(erro):
 # Adapters dos provedores - todos recebem (system, user, temperatura, formato_json)
 # ---------------------------------------------------------------------------
 
+def _sem_cerca_de_codigo(texto):
+    """Tira uma cerca ```json ... ``` se o modelo embrulhar o JSON nela."""
+    texto = texto.strip()
+    if texto.startswith("```"):
+        texto = texto.split("\n", 1)[1] if "\n" in texto else ""
+        if texto.rstrip().endswith("```"):
+            texto = texto.rstrip()[:-3]
+    return texto.strip()
+
+
+def anthropic_gerar_mensagem(system, user, temperatura=TEMPERATURA_COPY, formato_json=False):
+    """Claude via SDK oficial. `temperatura` é ignorada: os modelos atuais do
+    Claude rejeitam parâmetros de amostragem. O fallback do lado do servidor
+    ("default") troca de modelo sozinho se o primeiro recusar o pedido."""
+    import os
+
+    import anthropic
+
+    chave = db.obter_config("anthropic")
+    cliente = anthropic.Anthropic(api_key=chave, timeout=IA_TIMEOUT_SEGUNDOS, max_retries=1)
+    if formato_json:
+        system = system + "\n\nResponde únicamente con el objeto JSON, sin texto adicional ni bloques de código."
+    resposta = cliente.beta.messages.create(
+        model=os.environ.get("ANTHROPIC_MODEL") or MODELO_ANTHROPIC_PADRAO,
+        max_tokens=4000,
+        system=system,
+        messages=[{"role": "user", "content": user}],
+        output_config={"effort": "low"},
+        betas=["server-side-fallback-2026-07-01"],
+        fallbacks="default",
+    )
+    if resposta.stop_reason == "refusal":
+        raise RuntimeError("Claude rechazó generar este texto")
+    texto = "".join(bloco.text for bloco in resposta.content if bloco.type == "text").strip()
+    if not texto:
+        raise RuntimeError(f"Claude no devolvió texto (stop_reason={resposta.stop_reason})")
+    return _sem_cerca_de_codigo(texto) if formato_json else texto
+
+
 def gemini_gerar_mensagem(system, user, temperatura=TEMPERATURA_COPY, formato_json=False):
     from google import genai
 
@@ -170,6 +213,7 @@ def nvidia_gerar_mensagem(system, user, temperatura=TEMPERATURA_COPY, formato_js
 
 
 GERADORES = {
+    "anthropic": anthropic_gerar_mensagem,
     "gemini": gemini_gerar_mensagem,
     "groq": groq_gerar_mensagem,
     "nvidia": nvidia_gerar_mensagem,

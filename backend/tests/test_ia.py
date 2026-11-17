@@ -430,3 +430,69 @@ class TestTraduzirErro:
 
     def test_erro_desconhecido_vira_mensagem_generica(self):
         assert "error inesperado" in ia.traduzir_erro_ia(Exception("algo estranho"))
+
+
+class TestAnthropic:
+    """Adapter do Claude com o SDK falso: confere o pedido e a leitura da resposta."""
+
+    def _sdk_falso(self, monkeypatch, conteudo, stop_reason="end_turn"):
+        import sys
+        import types
+
+        chamadas = {}
+
+        class Bloco:
+            def __init__(self, tipo, texto=""):
+                self.type = tipo
+                self.text = texto
+
+        class Resposta:
+            def __init__(self):
+                self.content = [Bloco(t, x) for t, x in conteudo]
+                self.stop_reason = stop_reason
+
+        class Mensagens:
+            def create(self, **kwargs):
+                chamadas.update(kwargs)
+                return Resposta()
+
+        class Cliente:
+            def __init__(self, **kwargs):
+                chamadas["_cliente"] = kwargs
+                self.beta = types.SimpleNamespace(messages=Mensagens())
+
+        modulo = types.ModuleType("anthropic")
+        modulo.Anthropic = Cliente
+        monkeypatch.setitem(sys.modules, "anthropic", modulo)
+        monkeypatch.setattr(db, "obter_config", lambda chave, default=None: "sk-fake" if chave == "anthropic" else default)
+        monkeypatch.delenv("ANTHROPIC_MODEL", raising=False)
+        return chamadas
+
+    def test_pedido_e_texto(self, monkeypatch):
+        chamadas = self._sdk_falso(monkeypatch, [("thinking", ""), ("text", " Hola, Juan ")])
+        assert ia.anthropic_gerar_mensagem("sys", "user") == "Hola, Juan"
+        assert chamadas["model"] == "claude-opus-5-5"
+        assert chamadas["system"] == "sys"
+        assert chamadas["messages"] == [{"role": "user", "content": "user"}]
+        assert chamadas["fallbacks"] == "default"
+        assert "server-side-fallback-2026-07-01" in chamadas["betas"]
+        assert "temperature" not in chamadas
+        assert chamadas["_cliente"]["api_key"] == "sk-fake"
+
+    def test_modelo_por_ambiente(self, monkeypatch):
+        chamadas = self._sdk_falso(monkeypatch, [("text", "ok")])
+        monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-5-5")
+        ia.anthropic_gerar_mensagem("sys", "user")
+        assert chamadas["model"] == "claude-sonnet-5-5"
+
+    def test_json_sem_cerca(self, monkeypatch):
+        self._sdk_falso(monkeypatch, [("text", '```json\n{"prioridade": "alta"}\n```')])
+        assert ia.anthropic_gerar_mensagem("sys", "user", formato_json=True) == '{"prioridade": "alta"}'
+
+    def test_recusa_vira_erro(self, monkeypatch):
+        self._sdk_falso(monkeypatch, [], stop_reason="refusal")
+        with pytest.raises(RuntimeError):
+            ia.anthropic_gerar_mensagem("sys", "user")
+
+    def test_anthropic_e_o_primeiro(self):
+        assert ia.ORDEM_PROVEDORES_IA[0] == "anthropic"

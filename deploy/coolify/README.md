@@ -14,7 +14,8 @@ Todo se activa por variables de entorno. Sin ellas, la app se comporta igual que
 | `PROSPECTOS_SCRAPER_PATH` | Binario del scraper de Maps | Fijo en la imagen: el de Linux de gosom |
 | `PROSPECTOS_MAPS_LANG` | Idioma de los resultados de Maps (upstream: `pt`) | `es` |
 | `PROSPECTOS_PAIS` | `MX` arma los links de WhatsApp con la lada 52 (upstream: solo Brasil, 55) | `MX` |
-| `GEMINI_API_KEY`, `GROQ_API_KEY`, `NVIDIA_API_KEY` | Llaves de IA. Basta con una | Se llenan en Coolify, nunca en git |
+| `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `GROQ_API_KEY`, `NVIDIA_API_KEY` | Claves de IA. Basta con una; se prueban en ese orden | Se llenan en Coolify, nunca en git |
+| `ANTHROPIC_MODEL` | Modelo de Claude (por defecto `claude-opus-5-5`) | Vacío |
 
 También se corrigió `requirements.txt`: upstream fija `requests==2.32.3`, pero `instagrapi 2.18.3` exige `>=2.34.2` y la instalación falla.
 

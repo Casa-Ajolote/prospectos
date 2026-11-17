@@ -25,6 +25,7 @@ PASTA_BACKUPS = DIR_DADOS / "backups"
 MAX_BACKUPS_MANTIDOS = 20
 
 CHAVES_CONFIG_VALIDAS = {
+    "anthropic": "ANTHROPIC_API_KEY",
     "gemini": "GEMINI_API_KEY",
     "groq": "GROQ_API_KEY",
     "nvidia": "NVIDIA_API_KEY",
