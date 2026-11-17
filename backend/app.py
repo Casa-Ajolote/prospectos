@@ -84,12 +84,13 @@ def exigir_basic_auth():
         and hmac.compare_digest(auth.password or "", _AUTH_SENHA)
     ):
         return None
-    return Response("Autenticação necessária.", 401, {"WWW-Authenticate": 'Basic realm="ProspectOS"'})
+    return Response("Se requiere autenticación.", 401, {"WWW-Authenticate": 'Basic realm="ProspectOS"'})
 
 
 @app.route("/healthz")
 def healthz():
-    return jsonify({"ok": True})
+    # "idioma" e "commit" deixam conferir de fora (sem senha) qual build está no ar
+    return jsonify({"ok": True, "idioma": "es-MX", "commit": os.environ.get("SOURCE_COMMIT", "")[:7] or None})
 
 app.register_blueprint(rotas_leads.bp)
 app.register_blueprint(rotas_instagram.bp)

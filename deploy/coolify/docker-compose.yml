@@ -22,6 +22,8 @@ services:
       PROSPECTOS_MAPS_LANG: ${PROSPECTOS_MAPS_LANG:-es}
       PROSPECTOS_PAIS: ${PROSPECTOS_PAIS:-MX}
       PROSPECCAO_LOG_LEVEL: ${PROSPECCAO_LOG_LEVEL:-INFO}
+      # Coolify fills it on each deploy; /healthz shows it so anyone can check which build is live
+      SOURCE_COMMIT: ${SOURCE_COMMIT:-}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       GROQ_API_KEY: ${GROQ_API_KEY:-}
       NVIDIA_API_KEY: ${NVIDIA_API_KEY:-}
