@@ -30,6 +30,17 @@ También se corrigió `requirements.txt`: upstream fija `requests==2.32.3`, pero
 
 DNS: un registro `A` de `prospectos` al VPS (o comodín si ya existe).
 
+## Auto-deploy
+
+Cada push a `main` despliega solo. El panel de Coolify (`coolify.casa-ajolote.com`) solo responde dentro de Tailscale, así que GitHub no lo alcanza directo. Por eso hay una ruta pública que expone **únicamente** el webhook de GitHub:
+
+- DNS `deploy-hooks.casa-ajolote.com` → IP pública del VPS (DNS only).
+- Coolify → Servers → Proxy → Dynamic Configurations → `github-webhooks.yaml`: un router de Traefik con `Host(deploy-hooks…) && PathPrefix(/webhooks/source/github/)` hacia `http://coolify:8080`. Cualquier otra ruta en ese dominio da 503: el panel no queda expuesto.
+- Webhook en GitHub (Settings → Webhooks): `https://deploy-hooks.casa-ajolote.com/webhooks/source/github/events/manual`, `application/json`, solo el evento push. El secreto es el mismo que tiene el recurso en Coolify (pestaña Webhooks) y vive en 1Password como "Webhook Coolify · prospectos". Coolify rechaza los avisos sin firma válida.
+- Auto Deploy encendido en el recurso.
+
+Si un merge no despliega, revisa en GitHub las **Recent Deliveries** del webhook: la respuesta de Coolify dice si encoló el deploy (`Deployment queued.`) o por qué no.
+
 ## Límites conocidos
 
 - **Instagram:** usa una cuenta personal con `instagrapi`. Desde la IP de un datacenter el riesgo de checkpoint o baneo es alto. El login se hace dentro del contenedor (`python instagram/login.py <usuario>` desde la terminal de Coolify) y la sesión queda en `/data`. Úsalo solo con una cuenta desechable.
