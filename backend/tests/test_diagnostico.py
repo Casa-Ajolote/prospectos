@@ -102,6 +102,35 @@ class TestGeracaoDoPdf:
         pdf = diagnostico.gerar_diagnostico_pdf(buscar_lead())
         assert pdf.startswith(b"%PDF")
 
+    def test_problemas_em_pt_br_ja_salvos_viram_cards_em_espanhol(self):
+        achados = diagnostico._achados_do_site(
+            "não adaptado para celular; sem HTTPS (aparece como 'não seguro' no navegador)"
+        )
+        titulos = [titulo for titulo, _explicacao in achados]
+        assert titulos == ["Sitio marcado como 'no seguro'", "No adaptado para celular"]
+
+    def test_problemas_em_espanhol_tambem_sao_reconhecidos(self):
+        achados = diagnostico._achados_do_site(
+            "dominio no encontrado (puede haber vencido); página casi vacía; "
+            "hecho en constructor de plantillas (Wix); sin señal de actualización desde 2019"
+        )
+        titulos = [titulo for titulo, _explicacao in achados]
+        assert titulos == [
+            "La dirección del sitio ya no existe",
+            "Página prácticamente vacía",
+            "Hecho con un constructor de plantillas",
+            "Sitio detenido en el tiempo",
+        ]
+
+    def test_problema_desconhecido_vira_card_generico(self):
+        assert diagnostico._achados_do_site("algo raro") == [("Sitio con problemas técnicos", "algo raro")]
+
+    def test_textos_do_pdf_cabem_em_latin1(self):
+        textos = [t for _chaves, par in diagnostico.EXPLICACOES_PROBLEMAS for t in par]
+        textos += [t for par in diagnostico.CUSTOS_SEM_SITE for t in par]
+        for texto in textos:
+            texto.encode("latin-1")  # levanta UnicodeEncodeError se escapar algo
+
     def test_nome_do_arquivo_e_slugificado(self):
         assert diagnostico.nome_arquivo_diagnostico("Clínica São João!") == "diagnostico-cl-nica-s-o-jo-o.pdf"
         assert diagnostico.nome_arquivo_diagnostico(None) == "diagnostico-lead.pdf"

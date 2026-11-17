@@ -79,11 +79,11 @@ export function NovaBuscaModal({
         onEscapeKeyDown={(e) => rodando && e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle>Nova busca de leads</DialogTitle>
+          <DialogTitle>Nueva búsqueda de leads</DialogTitle>
           <DialogDescription>
             {modo === "texto"
-              ? 'Um nicho + cidade por linha, ex.: "clínica de estética em Londrina"'
-              : "Solte pinos no mapa, ajuste o raio de cada um e diga quais nichos procurar."}
+              ? 'Un nicho + ciudad por línea, p. ej.: "dentista en Cancún"'
+              : "Coloca pines en el mapa, ajusta el radio de cada uno e indica qué nichos buscar."}
           </DialogDescription>
         </DialogHeader>
 
@@ -124,7 +124,7 @@ export function NovaBuscaModal({
             value={queries}
             onChange={(e) => setQueries(e.target.value)}
             disabled={Boolean(rodando)}
-            placeholder={"clínica de estética em Londrina\ncorretor de imóveis em Londrina"}
+            placeholder={"dentista en Cancún\ninmobiliaria en Playa del Carmen"}
           />
         ) : (
           <div className="space-y-4">
@@ -150,19 +150,19 @@ export function NovaBuscaModal({
         <div className="flex justify-end gap-2">
           {!rodando && (
             <Button variant="ghost" onClick={handleFechar}>
-              {resultadoFinal ? "Fechar" : "Cancelar"}
+              {resultadoFinal ? "Cerrar" : "Cancelar"}
             </Button>
           )}
           {rodando && (
             <Button variant="ghost" onClick={onMinimizar}>
-              Minimizar e continuar usando
+              Minimizar y seguir usando la app
             </Button>
           )}
           <Button onClick={handleConfirmar} disabled={Boolean(rodando) || disparando || !podeBuscar}>
             {rodando || disparando
               ? "Buscando..."
               : modo === "mapa" && areas.length > 1
-                ? `Buscar em ${areas.length} áreas`
+                ? `Buscar en ${areas.length} áreas`
                 : "Buscar"}
           </Button>
         </div>

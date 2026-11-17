@@ -30,77 +30,81 @@ VERMELHO = (185, 28, 28)
 MARGEM = 12
 LARGURA_CONTEUDO = 186
 
-# problema detectado (substring) → (título leigo, explicação do impacto)
+# problema detectado (substrings) → (título leigo, explicação do impacto).
+# As chaves são trechos do texto que processar.avaliar_site_completo grava em
+# site_problemas: ficam as em pt-BR (leads já salvos no banco) e as em espanhol
+# (texto novo, depois da tradução de processar.py). Basta uma bater.
 EXPLICACOES_PROBLEMAS = [
-    ("fora do ar", (
-        "O site não abre",
-        "Quem clica no site hoje encontra uma página de erro. Cada visita perdida é um cliente "
-        "que procurou, não conseguiu ver nada e foi falar com o concorrente.",
+    (("fora do ar", "fuera de línea", "fuera del aire", "caído", "no abre"), (
+        "El sitio no abre",
+        "Quien le da clic al sitio hoy se encuentra con una página de error. Cada visita perdida es "
+        "un cliente que buscó, no pudo ver nada y se fue con la competencia.",
     )),
-    ("domínio não encontrado", (
-        "O endereço do site não existe mais",
-        "O domínio parece ter expirado ou sido abandonado. Quem tenta acessar não encontra "
-        "nada - é como ter a placa da loja apontando para um terreno vazio.",
+    (("domínio não encontrado", "dominio no encontrado"), (
+        "La dirección del sitio ya no existe",
+        "Parece que el dominio venció o fue abandonado. Quien intenta entrar no encuentra "
+        "nada: es como tener el letrero del local apuntando a un terreno baldío.",
     )),
-    ("erro (HTTP", (
-        "O site responde com erro",
-        "O endereço existe, mas devolve uma página de erro em vez do conteúdo. Na prática, "
-        "é o mesmo que estar fora do ar para quem visita.",
+    (("erro (HTTP", "error (HTTP"), (
+        "El sitio responde con error",
+        "La dirección existe, pero devuelve una página de error en lugar del contenido. En la "
+        "práctica, para quien lo visita es lo mismo que si estuviera caído.",
     )),
-    ("SSL", (
-        "Certificado de segurança vencido ou inválido",
-        "O navegador exibe um alerta de seguranca antes de abrir o site. A maioria das pessoas "
-        "desiste nessa tela - e a imagem que fica é de descuido.",
+    (("SSL",), (
+        "Certificado de seguridad vencido o inválido",
+        "El navegador muestra una alerta de seguridad antes de abrir el sitio. La mayoría de las "
+        "personas se va en esa pantalla, y la imagen que queda es de descuido.",
     )),
-    ("HTTPS", (
-        "Site marcado como 'não seguro'",
-        "Sem o cadeado de segurança, Chrome e Safari mostram o aviso 'não seguro' ao lado do "
-        "endereço. Isso espanta clientes e derruba a posição no Google.",
+    (("HTTPS",), (
+        "Sitio marcado como 'no seguro'",
+        "Sin el candado de seguridad, Chrome y Safari muestran el aviso 'no seguro' junto a la "
+        "dirección. Eso ahuyenta clientes y baja la posición en Google.",
     )),
-    ("lento", (
-        "Site muito lento para carregar",
-        "O servidor demora vários segundos só para começar a responder. Na internet, cada segundo "
-        "de espera derruba visitas - boa parte das pessoas desiste antes da página abrir.",
+    (("lento",), (
+        "Sitio muy lento para cargar",
+        "El servidor tarda varios segundos solo en empezar a responder. En internet, cada segundo "
+        "de espera tira visitas: buena parte de la gente se va antes de que la página abra.",
     )),
-    ("misto", (
-        "Página segura carregando itens inseguros",
-        "O site tem cadeado, mas puxa imagens ou arquivos por conexão insegura (conteúdo misto). "
-        "Navegadores modernos bloqueiam ou alertam sobre isso - partes da página podem nem carregar.",
+    (("misto", "mixto"), (
+        "Página segura cargando elementos inseguros",
+        "El sitio tiene candado, pero jala imágenes o archivos por una conexión insegura (contenido "
+        "mixto). Los navegadores modernos lo bloquean o lo advierten: partes de la página pueden "
+        "ni cargar.",
     )),
-    ("celular", (
-        "Não adaptado para celular",
-        "A grande maioria das pesquisas por negócios locais acontece no celular - e o site "
-        "atual não se ajusta à tela. O cliente amplia, aperta o botão errado e desiste.",
+    (("celular",), (
+        "No adaptado para celular",
+        "La gran mayoría de las búsquedas de negocios locales se hace desde el celular, y el sitio "
+        "actual no se ajusta a la pantalla. El cliente hace zoom, toca el botón equivocado y se va.",
     )),
-    ("vazia", (
-        "Página praticamente vazia",
-        "O site existe, mas não apresenta os serviços, fotos ou um botão de contato. "
-        "Hoje ele funciona como um cartão de visita em branco.",
+    (("vazia", "vacía", "vacia"), (
+        "Página prácticamente vacía",
+        "El sitio existe, pero no presenta los servicios, fotos ni un botón de contacto. "
+        "Hoy funciona como una tarjeta de presentación en blanco.",
     )),
-    ("construtor", (
-        "Feito em construtor de modelo pronto",
-        "O site foi montado numa plataforma de modelos prontos. Funciona, mas tem a mesma cara "
-        "de milhares de outros, e não passa a credibilidade que a reputação do negócio merece.",
+    (("construtor", "constructor"), (
+        "Hecho con un constructor de plantillas",
+        "El sitio se armó en una plataforma de plantillas prediseñadas. Funciona, pero se ve igual "
+        "que miles de otros y no transmite la credibilidad que la reputación del negocio merece.",
     )),
-    ("atualização", (
-        "Site parado no tempo",
-        "O rodapé ainda marca um ano antigo - sinal de que o site não recebe atenção há anos. "
-        "Para quem visita, parece que o negócio também parou.",
+    (("atualização", "actualización"), (
+        "Sitio detenido en el tiempo",
+        "El pie de página todavía marca un año viejo: señal de que el sitio no recibe atención "
+        "desde hace años. Para quien lo visita, parece que el negocio también se detuvo.",
     )),
 ]
 
 CUSTOS_SEM_SITE = [
-    ("Invisível fora do Google Maps", (
-        "Quem pesquisa no Google pelo serviço (e não pelo nome) encontra os concorrentes "
-        "que têm site - o negócio só aparece para quem já o conhece."
+    ("Invisible fuera de Google Maps", (
+        "Quien busca en Google el servicio (y no el nombre) encuentra a la competencia "
+        "que sí tiene sitio web: el negocio solo aparece para quien ya lo conoce."
     )),
-    ("A reputação não trabalha sozinha", (
-        "A nota alta e as avaliações ficam presas no Maps. Um site transforma essa "
-        "reputação em página de apresentação, portfólio e canal de contato."
+    ("La reputación no trabaja sola", (
+        "La buena calificación y las reseñas se quedan atrapadas en Maps. Un sitio web convierte "
+        "esa reputación en página de presentación, portafolio y canal de contacto."
     )),
-    ("Sem endereço profissional", (
-        "Na hora de fechar, muita gente confere se o negócio 'existe de verdade' na internet. "
-        "Sem site, essa confirmação não acontece - e a venda esfria."
+    ("Sin una dirección profesional", (
+        "A la hora de decidir, mucha gente revisa si el negocio 'existe de verdad' en internet. "
+        "Sin sitio web, esa confirmación no llega y la venta se enfría."
     )),
 ]
 
@@ -162,7 +166,7 @@ class _PdfDiagnostico(FPDF):
         self.set_xy(MARGEM, 7)
         self.set_font("helvetica", "B", 16)
         self.set_text_color(255, 255, 255)
-        self.cell(130, 10, "Diagnóstico de presença digital")
+        self.cell(130, 10, "Diagnóstico de presencia digital")
         self.set_font("helvetica", "", 9)
         self.set_text_color(220, 240, 230)
         self.cell(0, 10, date.today().strftime("%d/%m/%Y"), align="R")
@@ -272,6 +276,20 @@ def _painel_lista(pdf, x, y, largura, titulo, cor_titulo, cor_fundo, prefixo, it
     return altura
 
 
+def _achados_do_site(problemas_texto):
+    """Traduz o texto técnico de site_problemas em cards leigos (título, explicação).
+    Sem nenhuma chave reconhecida, devolve um card genérico com o texto bruto."""
+    texto = (problemas_texto or "").lower()
+    return [
+        (titulo, explicacao)
+        for chaves, (titulo, explicacao) in EXPLICACOES_PROBLEMAS
+        if any(chave.lower() in texto for chave in chaves)
+    ] or [(
+        "Sitio con problemas técnicos",
+        problemas_texto or "Problemas técnicos detectados en el análisis automático.",
+    )]
+
+
 def gerar_diagnostico_pdf(lead):
     """Gera o PDF de diagnóstico de um lead (dict/Row com os campos de leads).
     Retorna os bytes do arquivo."""
@@ -288,17 +306,7 @@ def gerar_diagnostico_pdf(lead):
 
     pagespeed = consultar_pagespeed(lead["site_url"]) if (tem_site and lead["site_url"]) else None
 
-    if tem_site:
-        achados = [
-            (titulo, explicacao)
-            for chave, (titulo, explicacao) in EXPLICACOES_PROBLEMAS
-            if chave.lower() in problemas_texto.lower()
-        ] or [(
-            "Site com problemas técnicos",
-            problemas_texto or "Problemas técnicos detectados na análise automática.",
-        )]
-    else:
-        achados = CUSTOS_SEM_SITE
+    achados = _achados_do_site(problemas_texto) if tem_site else CUSTOS_SEM_SITE
 
     # ---- desenho ----
     pdf = _PdfDiagnostico(format="A4")
@@ -324,40 +332,40 @@ def gerar_diagnostico_pdf(lead):
 
     _tile(
         pdf, MARGEM, y_placar, largura_tile,
-        "Reputação no Google", f"{nota}", VERDE_ESCURO,
-        subtitulo=f"{avaliacoes} avaliações de clientes",
+        "Reputación en Google", f"{nota}", VERDE_ESCURO,
+        subtitulo=f"{avaliacoes} reseñas de clientes",
         fracao_barra=(nota / 5) if nota else 0,
     )
 
     x2 = MARGEM + largura_tile + 4
     if not tem_site:
-        _tile(pdf, x2, y_placar, largura_tile, "Site próprio", "Não tem", VERMELHO,
-              subtitulo="nenhum site encontrado no Google")
+        _tile(pdf, x2, y_placar, largura_tile, "Sitio web propio", "No tiene", VERMELHO,
+              subtitulo="no se encontró ningún sitio en Google")
     elif pagespeed:
         detalhe = (
-            f"conteúdo aparece em {pagespeed['tempo_carregamento']} no celular"
-            if pagespeed["tempo_carregamento"] else "medição oficial do Google (PageSpeed)"
+            f"el contenido aparece en {pagespeed['tempo_carregamento']} en el celular"
+            if pagespeed["tempo_carregamento"] else "medición oficial de Google (PageSpeed)"
         )
         _tile(
             pdf, x2, y_placar, largura_tile,
-            "Desempenho (Google PageSpeed)", f"{pagespeed['nota']}/100",
+            "Rendimiento (Google PageSpeed)", f"{pagespeed['nota']}/100",
             _cor_nota_pagespeed(pagespeed["nota"]),
             subtitulo=detalhe, fracao_barra=pagespeed["nota"] / 100,
         )
     else:
-        _tile(pdf, x2, y_placar, largura_tile, "Desempenho (Google PageSpeed)", "-",
-              CINZA_SUAVE, subtitulo="medição indisponível agora")
+        _tile(pdf, x2, y_placar, largura_tile, "Rendimiento (Google PageSpeed)", "-",
+              CINZA_SUAVE, subtitulo="medición no disponible por ahora")
 
     x3 = MARGEM + (largura_tile + 4) * 2
-    rotulo3 = "Pontos a corrigir" if tem_site else "Oportunidades perdidas"
+    rotulo3 = "Puntos a corregir" if tem_site else "Oportunidades perdidas"
     _tile(pdf, x3, y_placar, largura_tile, rotulo3, str(len(achados)), LARANJA,
-          subtitulo="detalhados abaixo")
+          subtitulo="detallados abajo")
 
     pdf.set_y(y_placar + 27 + 7)
 
     # Achados em cards numerados
     _titulo_secao(
-        pdf, "O que encontramos no site atual" if tem_site else "O que a ausência de site está custando"
+        pdf, "Lo que encontramos en el sitio actual" if tem_site else "Lo que te está costando no tener sitio web"
     )
     for numero, (titulo, explicacao) in enumerate(achados, start=1):
         _card_problema(pdf, numero, titulo, explicacao)
@@ -365,24 +373,24 @@ def gerar_diagnostico_pdf(lead):
     # Raio-X em dois painéis coloridos
     if checklist and (checklist.get("tem") or checklist.get("falta")):
         pdf.ln(2)
-        _titulo_secao(pdf, "Raio-X do site atual")
+        _titulo_secao(pdf, "Radiografía del sitio actual")
         largura_painel = (LARGURA_CONTEUDO - 4) / 2
         y_paineis = pdf.get_y()
         altura_esq = _painel_lista(
             pdf, MARGEM, y_paineis, largura_painel,
-            "O que o site já tem", VERDE_ESCURO, VERDE_FUNDO, "+", (checklist.get("tem") or [])[:9],
+            "Lo que el sitio ya tiene", VERDE_ESCURO, VERDE_FUNDO, "+", (checklist.get("tem") or [])[:9],
         )
         altura_dir = _painel_lista(
             pdf, MARGEM + largura_painel + 4, y_paineis, largura_painel,
-            "O que está faltando", LARANJA, LARANJA_FUNDO, "-",
-            (checklist.get("falta") or ["nada - estrutura completa"])[:9],
+            "Lo que le falta", LARANJA, LARANJA_FUNDO, "-",
+            (checklist.get("falta") or ["nada, estructura completa"])[:9],
         )
         pdf.set_y(y_paineis + max(altura_esq, altura_dir) + 4)
 
     if tem_site and lead["site_url"]:
         pdf.set_font("helvetica", "I", 8)
         pdf.set_text_color(150, 150, 150)
-        pdf.cell(0, 5, _limpar_latin1(f"Análise automática de {lead['site_url']}"),
+        pdf.cell(0, 5, _limpar_latin1(f"Análisis automático de {lead['site_url']}"),
                  new_x="LMARGIN", new_y="NEXT")
 
     # Proposta / CTA - assinada pelo vendedor, como uma mensagem pessoal
@@ -396,10 +404,10 @@ def gerar_diagnostico_pdf(lead):
     pdf.set_xy(MARGEM + 6, y_cta + 4)
     pdf.set_font("helvetica", "B", 11)
     pdf.set_text_color(255, 255, 255)
-    pdf.cell(0, 6, "O próximo passo é simples", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 6, "El siguiente paso es sencillo", new_x="LMARGIN", new_y="NEXT")
     pdf.set_x(MARGEM + 6)
     pdf.set_font("helvetica", "", 9.5)
-    pdf.cell(0, 5, "Posso preparar uma prévia de como ficaria o site - sem compromisso. É só responder esta mensagem.",
+    pdf.cell(0, 5, "Puedo prepararte una vista previa de cómo quedaría tu sitio, sin compromiso. Solo responde este mensaje.",
              new_x="LMARGIN", new_y="NEXT")
     if nome_vendedor:
         pdf.set_xy(MARGEM + 6, y_cta + altura_cta - 8)

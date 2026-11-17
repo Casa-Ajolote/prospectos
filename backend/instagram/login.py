@@ -24,25 +24,25 @@ PASTA_SESSAO = DIR_DADOS / "instagram" / "sessao"
 
 def main() -> None:
     if len(sys.argv) != 2:
-        print("Uso: py login.py <seu_usuario>")
+        print("Uso: py login.py <tu_usuario>")
         sys.exit(1)
 
     usuario = sys.argv[1]
-    senha = getpass.getpass(f"Senha do Instagram para {usuario}: ")
+    senha = getpass.getpass(f"Contraseña de Instagram para {usuario}: ")
 
     cliente = Client()
 
     try:
         cliente.login(usuario, senha)
     except TwoFactorRequired:
-        codigo = input("Código de verificação (2FA): ").strip()
+        codigo = input("Código de verificación (2FA): ").strip()
         cliente.login(usuario, senha, verification_code=codigo)
 
     PASTA_SESSAO.mkdir(parents=True, exist_ok=True)
     caminho_sessao = PASTA_SESSAO / f"session-{usuario}.json"
     cliente.dump_settings(caminho_sessao)
 
-    print(f"Login feito com sucesso. Sessão salva em: {caminho_sessao}")
+    print(f"Sesión iniciada correctamente. Sesión guardada en: {caminho_sessao}")
 
 
 if __name__ == "__main__":

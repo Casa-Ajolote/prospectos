@@ -26,7 +26,7 @@ export function InstagramTagsFollowupForm({
   return (
     <div className="space-y-3">
       <div className="space-y-1.5">
-        <Label>Tags</Label>
+        <Label>Etiquetas</Label>
         <Input
           value={tags}
           onChange={(e) => setTags(e.target.value)}
@@ -47,7 +47,7 @@ export function InstagramTagsFollowupForm({
         disabled={salvando}
         onClick={() => onSalvar({ tags, proximoFollowup: followup || null })}
       >
-        {salvando ? "Salvando..." : "Salvar tags e follow-up"}
+        {salvando ? "Guardando..." : "Guardar tags y follow-up"}
       </Button>
     </div>
   )

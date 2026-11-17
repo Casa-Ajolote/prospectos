@@ -3,81 +3,53 @@ import {
   DocH2,
   DocList,
   DocCallout,
-  DocCode,
 } from "@/components/documentacao/DocSection"
 
 export function InstalacaoDoc() {
   return (
-    <DocSection titulo="Instalação e requisitos">
+    <DocSection titulo="Instalación y requisitos">
       <DocCallout variante="warning">
-        Esta ferramenta faz scraping do Google Maps e do Instagram, o que
-        viola os Termos de Uso das duas plataformas. Use por sua conta e
-        risco — a conta pessoal usada no Instagram pode ser bloqueada.
+        Esta herramienta hace scraping de Google Maps y de Instagram, lo cual
+        viola los Términos de Uso de las dos plataformas. Úsala bajo tu propio
+        riesgo: la cuenta de Instagram que conectes puede ser bloqueada.
       </DocCallout>
 
-      <DocH2>Requisitos</DocH2>
+      <DocH2>Qué necesitas</DocH2>
       <DocList>
         <li>
-          <strong>Windows</strong> — os scripts <DocCode>.bat</DocCode> e o
-          executável do scraper são específicos para Windows.
+          La app corre en un servidor web de la agencia. No tienes que instalar
+          nada en tu computadora: solo necesitas un navegador actualizado.
         </li>
         <li>
-          <strong>Python 3.11+</strong> — para o backend Flask.
-        </li>
-        <li>
-          <strong>Node.js 20+</strong> — para rodar o frontend React (o
-          scraper do Maps também usa Node.js internamente, via Playwright).
+          La dirección de la app y tu acceso te los da el administrador del
+          servidor.
         </li>
       </DocList>
 
-      <DocH2>1. Backend</DocH2>
+      <DocH2>Lo que configura el administrador del servidor</DocH2>
       <DocList>
+        <li>La instalación y las actualizaciones de la app.</li>
         <li>
-          <DocCode>py -m pip install -r requirements.txt</DocCode>
+          El scraper de Google Maps. Sin él, las búsquedas en Maps fallan (a
+          menos que se use la Google Places API, que se elige en
+          "Configuración").
         </li>
         <li>
-          Copie <DocCode>.env.example</DocCode> para <DocCode>.env</DocCode> e
-          preencha ao menos uma chave de IA gratuita (Gemini, Groq ou NVIDIA).
-        </li>
-        <li>
-          Baixe o <DocCode>google-maps-scraper.exe</DocCode> (projeto{" "}
-          <DocCode>gosom/google-maps-scraper</DocCode>) e coloque na raiz do
-          backend, ao lado de <DocCode>app.py</DocCode>. Sem ele, buscas no
-          Maps falham.
-        </li>
-        <li>
-          Rode com <DocCode>py app.py</DocCode> —{" "}
-          <DocCode>http://localhost:5000</DocCode>.
+          Opcionalmente, claves de IA a nivel servidor. También puedes
+          capturarlas tú en "Configuración"; las de la pantalla tienen
+          prioridad.
         </li>
       </DocList>
 
-      <DocH2>2. Frontend</DocH2>
+      <DocH2>Instagram (opcional, solo si vas a usar ese canal)</DocH2>
       <DocList>
         <li>
-          Dentro de <DocCode>prospeccao-react/</DocCode>:{" "}
-          <DocCode>npm install</DocCode> e depois{" "}
-          <DocCode>npm run dev</DocCode>.
+          Entra a "Configuración" → "Cuenta de Instagram" con tu usuario y
+          contraseña (y el código de verificación 2FA, si te lo pide).
         </li>
         <li>
-          Acessível em <DocCode>http://localhost:5173</DocCode>. O proxy da
-          API já vem configurado (sem precisar mexer em CORS).
-        </li>
-        <li>
-          Existe um atalho <DocCode>Abrir Prospecção.bat</DocCode> que sobe
-          backend + frontend juntos e abre o navegador automaticamente.
-        </li>
-      </DocList>
-
-      <DocH2>3. Instagram (opcional, só se for usar esse canal)</DocH2>
-      <DocList>
-        <li>
-          Rode <DocCode>py instagram\login.py SEU_USUARIO</DocCode> uma
-          única vez (pede senha e, se solicitado, código de 2FA).
-        </li>
-        <li>
-          Isso salva a sessão em{" "}
-          <DocCode>instagram/sessao/session-SEU_USUARIO.json</DocCode>. Se a
-          sessão expirar, basta rodar o login de novo.
+          La contraseña solo se usa para crear la sesión; no se guarda. Si la
+          sesión caduca, solo vuelve a entrar desde ahí.
         </li>
       </DocList>
     </DocSection>

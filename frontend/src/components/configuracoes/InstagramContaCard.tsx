@@ -54,16 +54,16 @@ export function InstagramContaCard() {
         <div className="flex items-center justify-between gap-2">
           <span className="inline-flex items-center gap-2 font-medium">
             <InstagramIcon className="size-4" />
-            Conta do Instagram
+            Cuenta de Instagram
           </span>
           <span className="inline-flex items-center gap-1 rounded-full bg-success/15 px-2 py-0.5 text-xs font-medium text-success">
             <CheckCircle2 className="size-3.5" />
-            Conectado como @{data.usuario}
+            Conectada como @{data.usuario}
           </span>
         </div>
         <p className="text-sm text-muted-foreground">
-          A análise de posts usa esta sessão para ler comentários e perfis.
-          Se o Instagram derrubar a sessão, basta entrar de novo aqui.
+          El análisis de posts usa esta sesión para leer comentarios y perfiles.
+          Si Instagram cierra la sesión, solo vuelve a entrar aquí.
         </p>
         <Button
           size="sm"
@@ -73,7 +73,7 @@ export function InstagramContaCard() {
           onClick={() => sair.mutate()}
         >
           <LogOut className="size-4" />
-          {sair.isPending ? "Saindo..." : "Sair da conta"}
+          {sair.isPending ? "Cerrando sesión..." : "Cerrar sesión"}
         </Button>
       </div>
     )
@@ -85,32 +85,32 @@ export function InstagramContaCard() {
       <div className="flex items-center justify-between gap-2">
         <span className="inline-flex items-center gap-2 font-medium">
           <InstagramIcon className="size-4" />
-          Conta do Instagram
+          Cuenta de Instagram
         </span>
         <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-          Não conectado
+          Sin conectar
         </span>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="space-y-1.5">
-          <Label>Usuário</Label>
+          <Label>Usuario</Label>
           <Input
             autoComplete="off"
             value={usuario}
             onChange={(e) => setUsuario(e.target.value)}
-            placeholder="@seu_usuario"
+            placeholder="@tu_usuario"
             disabled={aguardando2fa}
           />
         </div>
         <div className="space-y-1.5">
-          <Label>Senha</Label>
+          <Label>Contraseña</Label>
           <Input
             type="password"
             autoComplete="off"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
-            placeholder="Sua senha do Instagram"
+            placeholder="Tu contraseña de Instagram"
             disabled={aguardando2fa}
           />
         </div>
@@ -120,22 +120,22 @@ export function InstagramContaCard() {
         <div className="space-y-1.5 rounded-lg border border-info/40 bg-info/5 p-3">
           <Label className="inline-flex items-center gap-1.5">
             <ShieldCheck className="size-4 text-info" />
-            Código de verificação (2FA)
+            Código de verificación (2FA)
           </Label>
           <Input
             autoComplete="one-time-code"
             inputMode="numeric"
             value={codigo2fa}
             onChange={(e) => setCodigo2fa(e.target.value)}
-            placeholder="O código do seu app autenticador ou SMS"
+            placeholder="El código de tu app de autenticación o SMS"
           />
         </div>
       )}
 
       <div className="flex items-center justify-between gap-3">
         <p className="text-xs text-muted-foreground">
-          A senha é usada apenas para criar a sessão e nunca fica salva no
-          computador nem nos backups.
+          La contraseña solo se usa para crear la sesión y nunca se guarda en
+          el servidor ni en los respaldos.
         </p>
         <Button
           size="sm"

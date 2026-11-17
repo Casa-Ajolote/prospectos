@@ -19,7 +19,7 @@ export function StatusCaptura({ estado, onAbrirWhatsapp }: StatusCapturaProps) {
     return (
       <span className="inline-flex items-center gap-1.5 rounded-full bg-success/15 px-2.5 py-1 text-xs font-medium text-success">
         <Radio className="size-3.5 animate-pulse" />
-        Lendo a conversa do WhatsApp
+        Leyendo la conversación de WhatsApp
       </span>
     )
   }
@@ -30,10 +30,10 @@ export function StatusCaptura({ estado, onAbrirWhatsapp }: StatusCapturaProps) {
         <AlertTriangle className="mt-0.5 size-4 shrink-0 text-destructive" />
         <p className="text-muted-foreground">
           <span className="font-medium text-destructive">
-            Não consegui ler as mensagens do WhatsApp.
+            No pude leer los mensajes de WhatsApp.
           </span>{" "}
-          O layout do site deve ter mudado. Registre as mensagens à mão abaixo
-          enquanto isso, que a análise continua funcionando igual.
+          Probablemente cambió el diseño del sitio. Mientras tanto, registra los
+          mensajes a mano aquí abajo; el análisis sigue funcionando igual.
         </p>
       </div>
     )

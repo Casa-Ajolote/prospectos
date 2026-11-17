@@ -2,14 +2,14 @@ import { DocSection, DocH2, DocP, DocList, DocCallout } from "@/components/docum
 
 export function ConfiguracoesDoc() {
   return (
-    <DocSection titulo="Configurações de API">
+    <DocSection titulo="Configuración de API">
       <DocP>
-        Toda geração de mensagem por IA (copy de contato/follow-up nos dois
-        canais, classificação de leads do Instagram) depende de pelo menos um
-        provedor de IA configurado.
+        Toda la generación de mensajes con IA (textos de primer contacto y
+        follow-up en los dos canales, clasificación de leads de Instagram)
+        depende de que haya al menos un proveedor de IA configurado.
       </DocP>
 
-      <DocH2>Provedores suportados</DocH2>
+      <DocH2>Proveedores compatibles</DocH2>
       <DocList>
         <li>
           <strong>Google Gemini</strong> (<code>gemini-flash-latest</code>)
@@ -22,29 +22,30 @@ export function ConfiguracoesDoc() {
         </li>
       </DocList>
       <DocP>
-        Todos têm camada gratuita. Configurar mais de um aumenta a
-        confiabilidade — se um estiver sem cota, o sistema tenta o próximo
-        automaticamente.
+        Todos tienen un plan gratuito. Configurar más de uno da más
+        confiabilidad: si uno se queda sin cuota, el sistema intenta con el
+        siguiente automáticamente.
       </DocP>
 
-      <DocH2>Como funciona o fallback</DocH2>
+      <DocH2>Cómo funciona el respaldo entre proveedores</DocH2>
       <DocList>
-        <li>Tenta os provedores na ordem: Gemini → Groq → NVIDIA.</li>
-        <li>Pula silenciosamente qualquer provedor sem chave configurada.</li>
+        <li>Intenta con los proveedores en este orden: Gemini → Groq → NVIDIA.</li>
+        <li>Se salta sin avisar cualquier proveedor que no tenga clave configurada.</li>
         <li>
-          Se um provedor bateu cota recentemente, fica em "cooldown" por 5
-          minutos antes de tentar de novo.
+          Si un proveedor llegó a su límite de cuota hace poco, queda en
+          "pausa" 5 minutos antes de volver a intentarlo.
         </li>
         <li>
-          Se todos falharem, mostra um erro traduzido pra linguagem simples
-          (sem jargão técnico).
+          Si todos fallan, muestra un error explicado en lenguaje sencillo
+          (sin tecnicismos).
         </li>
       </DocList>
 
       <DocCallout>
-        As chaves configuradas pela tela têm prioridade sobre o arquivo{" "}
-        <code>.env</code> — mas quem só usa o <code>.env</code> continua
-        funcionando normalmente, sem precisar mexer na tela.
+        Las claves que guardas desde esta pantalla tienen prioridad sobre las
+        que el administrador del servidor haya dejado en la configuración del
+        servidor. Si ya están configuradas ahí, todo funciona igual sin que
+        tengas que capturar nada en la pantalla.
       </DocCallout>
     </DocSection>
   )

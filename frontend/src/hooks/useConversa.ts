@@ -73,9 +73,9 @@ export function useConversaMutations(canal: string, leadRef: string) {
     onSuccess: (analise) => {
       invalidar()
       if (analise.avisos?.length) {
-        toast.warning(`${analise.avisos.join(" ")} (usado: ${analise.provedor ?? "?"})`)
+        toast.warning(`${analise.avisos.join(" ")} (proveedor: ${analise.provedor ?? "?"})`)
       } else {
-        toast.success("Conversa analisada.")
+        toast.success("Conversación analizada.")
       }
     },
     onError: (erro: Error) => toast.error(erro.message),

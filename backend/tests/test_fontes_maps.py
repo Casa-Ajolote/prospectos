@@ -128,6 +128,8 @@ class TestBuscarComPlacesApi:
         total = fontes_maps.buscar_com_places_api(["x"], arquivo, "chave")
         assert total == 2
         assert chamadas[1]["pageToken"] == "tok"
+        assert chamadas[0]["languageCode"] == "es-419"
+        assert chamadas[0]["regionCode"] == "MX"
 
     def test_modo_mapa_envia_location_bias_circular(self, tmp_path, monkeypatch):
         corpos = []
@@ -147,14 +149,14 @@ class TestBuscarComPlacesApi:
         monkeypatch.setattr(
             fontes_maps.requests, "post", lambda *a, **kw: RespostaFake(403, {})
         )
-        with pytest.raises(fontes_maps.ErroPlacesApi, match="recusada"):
+        with pytest.raises(fontes_maps.ErroPlacesApi, match="rechazó la clave"):
             fontes_maps.buscar_com_places_api(["x"], tmp_path / "b.csv", "chave-ruim")
 
     def test_cota_esgotada_vira_mensagem_amigavel(self, tmp_path, monkeypatch):
         monkeypatch.setattr(
             fontes_maps.requests, "post", lambda *a, **kw: RespostaFake(429, {})
         )
-        with pytest.raises(fontes_maps.ErroPlacesApi, match="cota"):
+        with pytest.raises(fontes_maps.ErroPlacesApi, match="cuota"):
             fontes_maps.buscar_com_places_api(["x"], tmp_path / "b.csv", "chave")
 
 
@@ -173,7 +175,7 @@ class TestValidarChavePlaces:
         )
         ok, erro = fontes_maps.validar_chave_places("chave-ruim")
         assert ok is False
-        assert "recusada" in erro
+        assert "rechazó la clave" in erro
 
 
 # ---------------------------------------------------------------------------
@@ -201,7 +203,7 @@ class TestCapturarDadosBrutos:
         monkeypatch.setattr(jobs, "DIR_DADOS", tmp_path)
         db.salvar_config("fonte_maps", "places")
         erro = jobs._capturar_dados_brutos(tmp_path / "b.csv", {})
-        assert "nenhuma chave" in erro
+        assert "ninguna clave" in erro
 
     def test_fonte_places_usa_a_api_e_nao_o_scraper(self, banco, tmp_path, monkeypatch):
         monkeypatch.setattr(jobs, "DIR_DADOS", tmp_path)
@@ -267,7 +269,7 @@ class TestRotaFonteMaps:
     def test_post_places_sem_chave(self, cliente):
         resposta = cliente.post("/api/configuracoes/fonte-maps", json={"fonte": "places"})
         assert resposta.status_code == 400
-        assert "chave" in resposta.get_json()["erro"]
+        assert "clave" in resposta.get_json()["erro"]
 
     def test_post_places_valida_e_salva(self, cliente, monkeypatch):
         monkeypatch.setattr(fontes_maps, "validar_chave_places", lambda chave: (True, None))
@@ -387,7 +389,7 @@ class TestRotasSessaoInstagram:
             "/api/instagram/login", json={"usuario": "nando", "senha": "errada"}
         )
         assert resposta.status_code == 400
-        assert "recusou" in resposta.get_json()["erro"]
+        assert "rechazó" in resposta.get_json()["erro"]
 
     def test_login_novo_substitui_sessao_antiga(self, cliente, pasta_dados, instagrapi_fake):
         pasta = pasta_dados / "instagram" / "sessao"

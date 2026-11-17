@@ -60,8 +60,8 @@ def carregar_sessao() -> Client:
     arquivos_sessao = list(PASTA_SESSAO.glob("session-*.json"))
     if not arquivos_sessao:
         raise RuntimeError(
-            "Nenhuma sessão do Instagram encontrada. "
-            "Faça login em Configurações → Conta do Instagram."
+            "No se encontró ninguna sesión de Instagram. "
+            "Inicia sesión en Configuración → Cuenta de Instagram."
         )
     cliente = Client()
     cliente.load_settings(arquivos_sessao[0])
@@ -112,7 +112,7 @@ def enriquecer_perfis(caminho_json: Path, callback_progresso=None) -> Path:
     perfis = _carregar_parcial(caminho_saida)
     usernames_prontos = {p["username"] for p in perfis}
     if usernames_prontos:
-        print(f"Retomando: {len(usernames_prontos)} perfil(is) já consultado(s) em rodada anterior.")
+        print(f"Retomando: {len(usernames_prontos)} perfil(es) ya consultado(s) en una ronda anterior.")
 
     cliente = carregar_sessao()
 
@@ -147,7 +147,7 @@ def enriquecer_perfis(caminho_json: Path, callback_progresso=None) -> Path:
             delay_atual = DELAY_BASE_SEGUNDOS  # voltou a funcionar: backoff zera
             falhas_de_limite_seguidas = 0
         except UserNotFound:
-            item["erro"] = "perfil não encontrado (pode ter sido removido ou renomeado)"
+            item["erro"] = "perfil no encontrado (puede haber sido eliminado o renombrado)"
         except (ChallengeRequired, LoginRequired) as erro:
             # parada imediata: insistir com sessão inválida/checkpoint só piora
             # a situação da conta. O parcial já salvo permite retomar depois.
@@ -155,15 +155,15 @@ def enriquecer_perfis(caminho_json: Path, callback_progresso=None) -> Path:
             feitos = len(perfis)
             if isinstance(erro, ChallengeRequired):
                 raise AnaliseInterrompida(
-                    f"O Instagram pediu uma verificação de segurança (checkpoint) na sua conta. "
-                    f"Análise pausada com {feitos} de {total} perfil(is) consultado(s). "
-                    "Abra o Instagram no celular, resolva a verificação, rode py instagram\\login.py "
-                    "de novo e use 'Retomar análise' - ela continua de onde parou."
+                    f"Instagram pidió una verificación de seguridad (checkpoint) en tu cuenta. "
+                    f"Análisis en pausa con {feitos} de {total} perfil(es) consultado(s). "
+                    "Abre Instagram en el celular, resuelve la verificación, vuelve a iniciar sesión "
+                    "en Configuración → Cuenta de Instagram y usa 'Reanudar análisis': continúa donde se quedó."
                 )
             raise AnaliseInterrompida(
-                f"A sessão do Instagram expirou. Análise pausada com {feitos} de {total} "
-                "perfil(is) consultado(s). Rode py instagram\\login.py <seu_usuario> e use "
-                "'Retomar análise' - ela continua de onde parou."
+                f"La sesión de Instagram expiró. Análisis en pausa con {feitos} de {total} "
+                "perfil(es) consultado(s). Vuelve a iniciar sesión en Configuración → Cuenta de Instagram "
+                "y usa 'Reanudar análisis': continúa donde se quedó."
             )
         except (PleaseWaitFewMinutes, ClientError) as erro:
             eh_limite = isinstance(erro, PleaseWaitFewMinutes) or "wait" in str(erro).lower() or "429" in str(erro)
@@ -173,14 +173,14 @@ def enriquecer_perfis(caminho_json: Path, callback_progresso=None) -> Path:
                 if falhas_de_limite_seguidas >= FALHAS_DE_LIMITE_SEGUIDAS_PARA_PARAR:
                     _salvar(caminho_saida, dados.get("post_url"), perfis)
                     raise AnaliseInterrompida(
-                        f"O Instagram está limitando as consultas (rate limit) mesmo com o ritmo "
-                        f"reduzido. Análise pausada com {len(perfis)} de {total} perfil(is) "
-                        "consultado(s) - espere ao menos 1 hora e use 'Retomar análise', ela "
-                        "continua de onde parou."
+                        f"Instagram está limitando las consultas (rate limit) incluso con el ritmo "
+                        f"reducido. Análisis en pausa con {len(perfis)} de {total} perfil(es) "
+                        "consultado(s): espera al menos 1 hora y usa 'Reanudar análisis', "
+                        "continúa donde se quedó."
                     )
-                item["erro"] = f"perfil inacessível (rate limit): {erro}"
+                item["erro"] = f"perfil inaccesible (rate limit): {erro}"
             else:
-                item["erro"] = f"perfil inacessível (rate limit ou outro erro): {erro}"
+                item["erro"] = f"perfil inaccesible (rate limit u otro error): {erro}"
 
         perfis.append(item)
         _salvar(caminho_saida, dados.get("post_url"), perfis)  # parcial a cada perfil
@@ -194,21 +194,21 @@ def enriquecer_perfis(caminho_json: Path, callback_progresso=None) -> Path:
 
 def main() -> None:
     if len(sys.argv) != 2:
-        print("Uso: py enriquecer_perfis.py <caminho_do_json_de_comentarios>")
+        print("Uso: py enriquecer_perfis.py <ruta_del_json_de_comentarios>")
         sys.exit(1)
 
     caminho_json = Path(sys.argv[1])
     if not caminho_json.exists():
-        print(f"Erro: arquivo não encontrado: {caminho_json}")
+        print(f"Error: archivo no encontrado: {caminho_json}")
         sys.exit(1)
 
     try:
         caminho_saida = enriquecer_perfis(caminho_json)
     except RuntimeError as erro:
-        print(f"Erro: {erro}")
+        print(f"Error: {erro}")
         sys.exit(1)
 
-    print(f"Perfis enriquecidos salvos em: {caminho_saida}")
+    print(f"Perfiles enriquecidos guardados en: {caminho_saida}")
 
 
 if __name__ == "__main__":

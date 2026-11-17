@@ -4,12 +4,13 @@
 
 export function saudacaoAtual(): string {
   const hora = new Date().getHours()
-  if (hora >= 5 && hora < 12) return "Bom dia"
-  if (hora >= 12 && hora < 18) return "Boa tarde"
-  return "Boa noite"
+  if (hora >= 5 && hora < 12) return "Buenos días"
+  if (hora >= 12 && hora < 18) return "Buenas tardes"
+  return "Buenas noches"
 }
 
-const REGEX_SAUDACAO = /\b(Bom dia|Boa tarde|Boa noite)\b/gi
+// acepta también los saludos en portugués de copys generadas antes de la traducción
+const REGEX_SAUDACAO = /\b(Buenos días|Buen día|Buenas tardes|Buenas noches|Bom dia|Boa tarde|Boa noite)\b/gi
 
 export function ajustarSaudacao(texto: string): string {
   const atual = saudacaoAtual()

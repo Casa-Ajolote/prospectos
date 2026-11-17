@@ -35,45 +35,45 @@ export function PerfilVendedorCard() {
           <UserRound className="size-4" />
         </div>
         <div>
-          <h3 className="text-sm font-medium">Seu perfil de vendedor</h3>
+          <h3 className="text-sm font-medium">Tu perfil de vendedor</h3>
           <p className="text-xs text-muted-foreground">
-            A IA usa isso para escrever as mensagens na sua voz, com o seu nome.
+            La IA lo usa para escribir los mensajes con tu voz y tu nombre.
           </p>
         </div>
       </div>
 
       <div className="space-y-3">
         <div className="space-y-1">
-          <Label htmlFor="vendedor-nome">Seu nome (como quer aparecer)</Label>
+          <Label htmlFor="vendedor-nome">Tu nombre (como quieres que aparezca)</Label>
           <Input
             id="vendedor-nome"
             value={nome}
             onChange={(e) => setNome(e.target.value)}
-            placeholder="Ex.: Fernando"
+            placeholder="Ej.: Daniela"
             maxLength={80}
           />
         </div>
         <div className="space-y-1">
-          <Label htmlFor="vendedor-apresentacao">O que você faz (1 frase)</Label>
+          <Label htmlFor="vendedor-apresentacao">Qué haces (1 frase)</Label>
           <Textarea
             id="vendedor-apresentacao"
             rows={2}
             value={apresentacao}
             onChange={(e) => setApresentacao(e.target.value)}
-            placeholder="Ex.: crio sites profissionais para negócios locais"
+            placeholder="Ej.: hago sitios web profesionales para negocios locales"
             maxLength={300}
           />
         </div>
         <div className="space-y-1">
           <Label htmlFor="vendedor-diferencial">
-            Seu diferencial <span className="text-muted-foreground">(opcional)</span>
+            Lo que te distingue <span className="text-muted-foreground">(opcional)</span>
           </Label>
           <Textarea
             id="vendedor-diferencial"
             rows={2}
             value={diferencial}
             onChange={(e) => setDiferencial(e.target.value)}
-            placeholder="Ex.: entrego em até 7 dias, com tudo incluso (textos, fotos e publicação)"
+            placeholder="Ej.: lo entrego en máximo 7 días, con todo incluido (textos, fotos y publicación)"
             maxLength={300}
           />
         </div>
@@ -84,7 +84,7 @@ export function PerfilVendedorCard() {
         onClick={() => salvar.mutate({ nome, apresentacao, diferencial })}
         disabled={salvar.isPending}
       >
-        {salvar.isPending ? "Salvando..." : "Salvar perfil"}
+        {salvar.isPending ? "Guardando..." : "Guardar perfil"}
       </Button>
     </div>
   )

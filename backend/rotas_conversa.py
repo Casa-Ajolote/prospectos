@@ -104,7 +104,7 @@ def _validar_alvo(canal, lead_ref):
     """Confere canal válido e lead existente. Retorna (lead_dict, None) ou
     (None, (resposta, status))."""
     if canal not in CANAIS_CONVERSA:
-        return None, (jsonify({"erro": f"canal inválido. Use um de: {', '.join(sorted(CANAIS_CONVERSA))}"}), 400)
+        return None, (jsonify({"erro": f"canal inválido. Usa uno de: {', '.join(sorted(CANAIS_CONVERSA))}"}), 400)
 
     conexao = db.conectar()
     try:
@@ -114,13 +114,13 @@ def _validar_alvo(canal, lead_ref):
             try:
                 lead_id = int(lead_ref)
             except (TypeError, ValueError):
-                return None, (jsonify({"erro": "lead do Instagram é identificado por um número"}), 400)
+                return None, (jsonify({"erro": "el lead de Instagram se identifica con un número"}), 400)
             linha = conexao.execute("SELECT * FROM instagram_leads WHERE id = ?", (lead_id,)).fetchone()
     finally:
         conexao.close()
 
     if not linha:
-        return None, (jsonify({"erro": "lead não encontrado"}), 404)
+        return None, (jsonify({"erro": "lead no encontrado"}), 404)
     return dict(linha), None
 
 
@@ -207,11 +207,11 @@ def adicionar_mensagem(canal, lead_ref):
     origem = str(dados.get("origem", "manual")).strip().lower()
 
     if autor not in AUTORES_MENSAGEM:
-        return jsonify({"erro": f"autor inválido. Use um de: {', '.join(sorted(AUTORES_MENSAGEM))}"}), 400
+        return jsonify({"erro": f"autor inválido. Usa uno de: {', '.join(sorted(AUTORES_MENSAGEM))}"}), 400
     if not texto:
-        return jsonify({"erro": "a mensagem não pode ficar vazia"}), 400
+        return jsonify({"erro": "el mensaje no puede quedar vacío"}), 400
     if len(texto) > MAX_CARACTERES_MENSAGEM_CONVERSA:
-        return jsonify({"erro": f"mensagem muito longa (máximo {MAX_CARACTERES_MENSAGEM_CONVERSA} caracteres)"}), 400
+        return jsonify({"erro": f"mensaje demasiado largo (máximo {MAX_CARACTERES_MENSAGEM_CONVERSA} caracteres)"}), 400
     if origem not in ORIGENS_MENSAGEM:
         origem = "manual"
 
@@ -223,7 +223,7 @@ def adicionar_mensagem(canal, lead_ref):
             (canal, str(lead_ref)),
         ).fetchone()[0]
         if total >= MAX_MENSAGENS_POR_LEAD:
-            return jsonify({"erro": "esta conversa atingiu o limite de mensagens guardadas"}), 400
+            return jsonify({"erro": "esta conversación llegó al límite de mensajes guardados"}), 400
 
         # mensagem manual não participa da dedup automática (chave NULL): duas
         # iguais digitadas de propósito devem coexistir
@@ -271,8 +271,8 @@ def analisar_conversa(canal, lead_ref):
 
     if not mensagens:
         return jsonify({
-            "erro": "ainda não há mensagens nesta conversa. Registre ao menos a resposta do lead "
-                    "para a IA ter o que analisar."
+            "erro": "todavía no hay mensajes en esta conversación. Registra al menos la respuesta del lead "
+                    "para que la IA tenga qué analizar."
         }), 400
 
     try:
@@ -280,8 +280,8 @@ def analisar_conversa(canal, lead_ref):
     except ia.NenhumProvedorDisponivel as excecao:
         logger.warning("análise de conversa falhou em todos os provedores: %s", excecao.erro_final)
         return jsonify({
-            "erro": "Nenhum provedor de IA conseguiu analisar a conversa agora. "
-                    "Confira suas chaves em Configurações e tente de novo."
+            "erro": "Ningún proveedor de IA pudo analizar la conversación en este momento. "
+                    "Revisa tus claves en Configuración e inténtalo de nuevo."
         }), 500
     except Exception as erro_inesperado:
         logger.exception("erro inesperado ao analisar conversa")
@@ -319,7 +319,7 @@ def definir_lead_ativo():
     canal = str(dados.get("canal", "maps")).strip().lower()
     lead_ref = str(dados.get("lead_ref", "")).strip()
     if not lead_ref:
-        return jsonify({"erro": "informe o lead"}), 400
+        return jsonify({"erro": "indica el lead"}), 400
 
     lead, erro = _validar_alvo(canal, lead_ref)
     if erro:
@@ -389,7 +389,7 @@ def ingerir_mensagens_do_whatsapp():
     mensagens = dados.get("mensagens") or []
 
     if not isinstance(mensagens, list):
-        return jsonify({"erro": "mensagens deve ser uma lista"}), 400
+        return jsonify({"erro": "mensagens debe ser una lista"}), 400
     if len(mensagens) > MAX_MENSAGENS_POR_INGESTAO:
         mensagens = mensagens[-MAX_MENSAGENS_POR_INGESTAO:]
 
@@ -398,7 +398,7 @@ def ingerir_mensagens_do_whatsapp():
     canal, lead_ref = _resolver_lead_por_telefone(telefone)
     if not lead_ref:
         return jsonify({"ok": True, "vinculado": False, "novas": 0,
-                        "motivo": "nenhum lead com esse telefone"})
+                        "motivo": "ningún lead con ese teléfono"})
 
     novas = 0
     conexao = db.conectar()

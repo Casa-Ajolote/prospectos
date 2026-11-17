@@ -35,8 +35,8 @@ def carregar_sessao() -> Client:
     arquivos_sessao = list(PASTA_SESSAO.glob("session-*.json"))
     if not arquivos_sessao:
         raise RuntimeError(
-            "Nenhuma sessão do Instagram encontrada. "
-            "Faça login em Configurações → Conta do Instagram."
+            "No se encontró ninguna sesión de Instagram. "
+            "Inicia sesión en Configuración → Cuenta de Instagram."
         )
     cliente = Client()
     cliente.load_settings(arquivos_sessao[0])
@@ -54,18 +54,18 @@ def raspar_comentarios(url: str) -> Path:
         comentarios_brutos = cliente.media_comments(media_pk, amount=0)
     except ChallengeRequired:
         raise RuntimeError(
-            "O Instagram pediu uma verificação de segurança (checkpoint) na sua conta. "
-            "Abra o Instagram no celular, resolva a verificação e rode py instagram\\login.py de novo."
+            "Instagram pidió una verificación de seguridad (checkpoint) en tu cuenta. "
+            "Abre Instagram en el celular, resuelve la verificación y vuelve a iniciar sesión en Configuración → Cuenta de Instagram."
         )
     except LoginRequired:
         raise RuntimeError(
-            "A sessão do Instagram expirou ou foi invalidada. "
-            "Rode de novo: py instagram\\login.py <seu_usuario>"
+            "La sesión de Instagram expiró o se invalidó. "
+            "Vuelve a iniciar sesión en Configuración → Cuenta de Instagram."
         )
     except PleaseWaitFewMinutes:
         raise RuntimeError(
-            "O Instagram está limitando as requisições da sua conta agora (rate limit). "
-            "Espere alguns minutos (de preferência 1 hora) e tente de novo."
+            "Instagram está limitando las solicitudes de tu cuenta en este momento (rate limit). "
+            "Espera unos minutos (de preferencia 1 hora) e inténtalo de nuevo."
         )
 
     comentarios = [
@@ -91,7 +91,7 @@ def raspar_comentarios(url: str) -> Path:
 
 def main() -> None:
     if len(sys.argv) != 2:
-        print("Uso: py raspar_comentarios.py <url_do_post>")
+        print("Uso: py raspar_comentarios.py <url_del_post>")
         sys.exit(1)
 
     url = sys.argv[1]
@@ -99,22 +99,22 @@ def main() -> None:
     try:
         caminho_saida = raspar_comentarios(url)
     except RuntimeError as erro:
-        print(f"Erro: {erro}")
+        print(f"Error: {erro}")
         sys.exit(1)
     except LoginRequired:
         print(
-            "Erro: a sessão expirou ou foi invalidada. Rode de novo: "
-            "py login.py <seu_usuario>"
+            "Error: la sesión expiró o se invalidó. Vuelve a ejecutar: "
+            "py login.py <tu_usuario>"
         )
         sys.exit(1)
     except ClientError as erro:
         print(
-            f"Erro ao acessar o post (pode ser privado, ter sido removido, "
-            f"ou rate limit do Instagram): {erro}"
+            f"Error al acceder al post (puede ser privado, haber sido eliminado "
+            f"o por límite de solicitudes de Instagram): {erro}"
         )
         sys.exit(1)
 
-    print(f"Comentários salvos em: {caminho_saida}")
+    print(f"Comentarios guardados en: {caminho_saida}")
 
 
 if __name__ == "__main__":

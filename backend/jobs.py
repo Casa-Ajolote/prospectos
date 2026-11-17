@@ -208,20 +208,20 @@ def traduzir_erro_scraper(stderr, returncode):
         # antigo tentando baixar uma versão do driver do Playwright que a
         # Microsoft já removeu dos servidores (o download volta 404)
         return (
-            "O scraper não conseguiu preparar o navegador interno. Causa mais comum: "
-            "seu google-maps-scraper.exe está desatualizado e procura um componente "
-            "(driver do Playwright) que a Microsoft já tirou do ar. Baixe a versão mais "
-            "recente em github.com/gosom/google-maps-scraper/releases e substitua o .exe "
-            "na pasta backend/. Se persistir, confira se o Node.js está instalado. "
-            "Alternativa sem scraper: use a Google Places API em Configurações → Fonte de dados."
+            "El scraper no pudo preparar el navegador interno. Causa más común: "
+            "tu google-maps-scraper.exe está desactualizado y busca un componente "
+            "(driver de Playwright) que Microsoft ya retiró. Descarga la versión más "
+            "reciente en github.com/gosom/google-maps-scraper/releases y reemplaza el .exe "
+            "en la carpeta backend/. Si el problema sigue, revisa que Node.js esté instalado. "
+            "Alternativa sin scraper: usa la Google Places API en Configuración → Fuente de datos."
         )
     if "no such file" in texto or "not found" in texto:
-        return "O programa google-maps-scraper.exe não foi encontrado na pasta do projeto."
+        return "No se encontró el programa google-maps-scraper.exe en la carpeta del proyecto."
     if "deadline exceeded" in texto or "timeout" in texto:
-        return "A busca no Google Maps demorou demais e foi interrompida. Tente de novo."
+        return "La búsqueda en Google Maps tardó demasiado y se interrumpió. Inténtalo de nuevo."
 
     return (
-        f"A busca falhou (código {returncode}). Veja os detalhes completos em logs/prospeccao.log."
+        f"La búsqueda falló (código {returncode}). Consulta los detalles completos en logs/prospeccao.log."
     )
 
 
@@ -292,7 +292,7 @@ def _processar_linha_de_progresso_scraper(linha_texto):
     if mensagem == "job finished":
         estado_busca["empresas_processadas"] += 1
         estado_busca["mensagem"] = (
-            f"Buscando no Google Maps... {estado_busca['empresas_processadas']} empresa(s) processada(s)"
+            f"Buscando en Google Maps... {estado_busca['empresas_processadas']} empresa(s) procesada(s)"
         )
     elif mensagem.endswith("places found"):
         partes = mensagem.split(" ", 1)
@@ -302,7 +302,7 @@ def _processar_linha_de_progresso_scraper(linha_texto):
 
 def _callback_progresso_verificacao(indice, total, nome_empresa):
     estado_busca["etapa"] = "verificando_sites"
-    estado_busca["mensagem"] = f"Verificando site da empresa {indice} de {total}: {nome_empresa}"
+    estado_busca["mensagem"] = f"Revisando el sitio de la empresa {indice} de {total}: {nome_empresa}"
     estado_busca["empresas_processadas"] = indice
     estado_busca["empresas_encontradas"] = total
     _atualizar_job(_job_id_busca, etapa="verificando_sites", progresso_atual=indice, progresso_total=total)
@@ -322,7 +322,7 @@ def _executar_scraper(arquivo_bruto, ambiente, flags_extras=()):
         os.environ.get("PROSPECTOS_SCRAPER_PATH") or str(caminho_recurso("google-maps-scraper.exe")),
         "-input", str(DIR_DADOS / "queries.txt"),
         "-results", str(arquivo_bruto),
-        "-lang", os.environ.get("PROSPECTOS_MAPS_LANG", "pt"),
+        "-lang", os.environ.get("PROSPECTOS_MAPS_LANG", "es"),
         "-depth", "5",
         "-exit-on-inactivity", "3m",
         *flags_extras,
@@ -345,12 +345,12 @@ def _executar_scraper(arquivo_bruto, ambiente, flags_extras=()):
     except subprocess.TimeoutExpired:
         logger.error("scraper excedeu o tempo limite de %ss", TIMEOUT_SCRAPER_SEGUNDOS)
         return (
-            "A busca demorou demais e foi cancelada. Tente com menos nichos por vez, "
-            "ou confira sua conexão com a internet."
+            "La búsqueda tardó demasiado y se canceló. Intenta con menos nichos a la vez "
+            "o revisa tu conexión a internet."
         )
     except FileNotFoundError:
         logger.exception("google-maps-scraper.exe não encontrado")
-        return "O programa google-maps-scraper.exe não foi encontrado na pasta do projeto."
+        return "No se encontró el programa google-maps-scraper.exe en la carpeta del proyecto."
 
     if returncode != 0:
         logger.error("scraper falhou (código %s). stderr: %s", returncode, stderr_completo[-2000:])
@@ -365,8 +365,8 @@ CHAVES_CONTAGENS_SOMADAS = (
 )
 
 DICA_FONTE_PLACES = (
-    " Dica: em Configurações → Fonte de dados você pode usar a Google Places API "
-    "oficial, que é mais estável que o scraper."
+    " Tip: en Configuración → Fuente de datos puedes usar la Google Places API "
+    "oficial, que es más estable que el scraper."
 )
 
 
@@ -380,11 +380,11 @@ def montar_mensagem_conclusao(contagens):
 
     descartes = []
     if contagens.get("descartados_por_site_ok"):
-        descartes.append(f"{contagens['descartados_por_site_ok']} já têm site bom (não precisam de você)")
+        descartes.append(f"{contagens['descartados_por_site_ok']} ya tienen un buen sitio (no te necesitan)")
     if contagens.get("descartados_nota_baixa"):
-        descartes.append(f"{contagens['descartados_nota_baixa']} com nota baixa ou sem avaliações")
+        descartes.append(f"{contagens['descartados_nota_baixa']} con calificación baja o sin reseñas")
     if contagens.get("descartados_sem_telefone"):
-        descartes.append(f"{contagens['descartados_sem_telefone']} sem telefone pra contato")
+        descartes.append(f"{contagens['descartados_sem_telefone']} sin teléfono de contacto")
 
     ja_conhecidos = total - novos - sum((
         contagens.get("descartados_por_site_ok", 0),
@@ -393,15 +393,15 @@ def montar_mensagem_conclusao(contagens):
         contagens.get("erros_de_linha", 0),
     ))
     if ja_conhecidos > 0:
-        descartes.append(f"{ja_conhecidos} já estavam na sua base (dados atualizados)")
+        descartes.append(f"{ja_conhecidos} ya estaban en tu base (datos actualizados)")
 
-    detalhe_funil = f" Das {total} empresas capturadas: " + "; ".join(descartes) + "." if descartes else ""
+    detalhe_funil = f" De las {total} empresas capturadas: " + "; ".join(descartes) + "." if descartes else ""
 
     if novos == 0:
-        return "Busca concluída: nenhum lead novo desta vez." + detalhe_funil
+        return "Búsqueda terminada: ningún lead nuevo esta vez." + detalhe_funil
     return (
-        f"Busca concluída: {novos} lead(s) novo(s) - "
-        f"{contagens['novos_sem_site']} sem site e {contagens['novos_site_ruim']} com site ruim!"
+        f"Búsqueda terminada: {novos} lead(s) nuevo(s) - "
+        f"{contagens['novos_sem_site']} sin sitio y {contagens['novos_site_ruim']} con sitio deficiente."
         + detalhe_funil
     )
 
@@ -427,15 +427,15 @@ def _capturar_dados_brutos(arquivo_bruto, ambiente, area=None):
         chave = db.obter_config("places")
         if not chave:
             return (
-                "A fonte Google Places API está selecionada, mas nenhuma chave foi "
-                "configurada. Salve a chave em Configurações → Fonte de dados."
+                "La fuente Google Places API está seleccionada, pero no se configuró "
+                "ninguna clave. Guarda la clave en Configuración → Fuente de datos."
             )
         queries = _ler_queries_da_busca()
         if not queries:
-            return "Nenhuma busca encontrada. Dispare a busca novamente."
+            return "No se encontró ninguna búsqueda. Lanza la búsqueda de nuevo."
 
         def progresso(indice, total, texto):
-            estado_busca["mensagem"] = f"Consultando o Google Places... busca {indice} de {total}: {texto}"
+            estado_busca["mensagem"] = f"Consultando Google Places... búsqueda {indice} de {total}: {texto}"
 
         try:
             encontrados = fontes_maps.buscar_com_places_api(
@@ -469,7 +469,7 @@ def _buscar_por_areas(areas, ambiente, data):
         rotulo = area["rotulo"]
         estado_busca["area_atual"] = i
         estado_busca["etapa"] = "scraping"
-        estado_busca["mensagem"] = f"Área {i} de {len(areas)} ({rotulo}): buscando no Google Maps..."
+        estado_busca["mensagem"] = f"Área {i} de {len(areas)} ({rotulo}): buscando en Google Maps..."
         _atualizar_job(
             _job_id_busca, etapa="scraping", mensagem=estado_busca["mensagem"],
             progresso_atual=i, progresso_total=len(areas),
@@ -482,7 +482,7 @@ def _buscar_por_areas(areas, ambiente, data):
             continue
 
         estado_busca["etapa"] = "verificando_sites"
-        estado_busca["mensagem"] = f"Área {i} de {len(areas)} ({rotulo}): filtrando leads e gerando WhatsApp..."
+        estado_busca["mensagem"] = f"Área {i} de {len(areas)} ({rotulo}): filtrando leads y generando WhatsApp..."
         estado_busca["empresas_processadas"] = 0
         contagens = processar.processar(
             arquivo_bruto,
@@ -495,7 +495,7 @@ def _buscar_por_areas(areas, ambiente, data):
         alguma_area_ok = True
 
     if not alguma_area_ok:
-        estado_busca["mensagem"] = "A busca falhou em todas as áreas. " + " | ".join(avisos)
+        estado_busca["mensagem"] = "La búsqueda falló en todas las áreas. " + " | ".join(avisos)
         if (db.obter_config("fonte_maps") or "scraper") == "scraper":
             estado_busca["mensagem"] += DICA_FONTE_PLACES
         return None
@@ -507,7 +507,7 @@ def _buscar_por_areas(areas, ambiente, data):
 def _rodar_busca_em_background(areas=None):
     global _job_id_busca
     estado_busca["rodando"] = True
-    estado_busca["mensagem"] = "Buscando no Google Maps..."
+    estado_busca["mensagem"] = "Buscando en Google Maps..."
     estado_busca["etapa"] = "scraping"
     estado_busca["empresas_encontradas"] = 0
     estado_busca["empresas_processadas"] = 0
@@ -515,7 +515,7 @@ def _rodar_busca_em_background(areas=None):
     estado_busca["total_areas"] = len(areas) if areas else 0
     logger.info("busca iniciada (modo %s)", "mapa" if areas else "texto")
     _job_id_busca = _registrar_inicio_job("busca_maps")
-    _atualizar_job(_job_id_busca, etapa="scraping", mensagem="Buscando no Google Maps...")
+    _atualizar_job(_job_id_busca, etapa="scraping", mensagem="Buscando en Google Maps...")
     status_final = "erro"
 
     try:
@@ -551,7 +551,7 @@ def _rodar_busca_em_background(areas=None):
                 estado_busca["mensagem"] = erro
                 return
 
-            estado_busca["mensagem"] = "Filtrando leads e gerando WhatsApp..."
+            estado_busca["mensagem"] = "Filtrando leads y generando WhatsApp..."
             estado_busca["etapa"] = "verificando_sites"
             estado_busca["empresas_processadas"] = 0
             contagens = processar.processar(arquivo_bruto, callback_progresso=_callback_progresso_verificacao)
@@ -560,31 +560,31 @@ def _rodar_busca_em_background(areas=None):
         if contagens["total_no_csv"] == 0:
             if estado_busca["empresas_encontradas"] == 0:
                 estado_busca["mensagem"] = (
-                    "Busca concluída, mas o Google Maps não retornou nenhum resultado - o scraper "
-                    "rodou sem erro, só não conseguiu capturar nada. Isso geralmente é bloqueio "
-                    "temporário do Google para o seu IP/rede (comum em VPN, rede corporativa ou "
-                    "após várias buscas seguidas), não um erro de digitação. Tente novamente mais "
-                    "tarde ou numa rede diferente."
+                    "Búsqueda terminada, pero Google Maps no devolvió ningún resultado: el scraper "
+                    "corrió sin errores, solo que no logró capturar nada. Esto suele ser un bloqueo "
+                    "temporal de Google para tu IP/red (común con VPN, red corporativa o "
+                    "después de varias búsquedas seguidas), no un error de escritura. Inténtalo más "
+                    "tarde o desde otra red."
                     + (DICA_FONTE_PLACES if fonte == "scraper" else "")
                 )
             else:
                 estado_busca["mensagem"] = (
-                    "Busca concluída, mas nenhuma empresa foi encontrada. Confira se o nicho/cidade "
-                    "estão escritos corretamente."
+                    "Búsqueda terminada, pero no se encontró ninguna empresa. Revisa que el nicho/ciudad "
+                    "estén bien escritos."
                 )
         else:
             estado_busca["mensagem"] = montar_mensagem_conclusao(contagens)
 
         avisos_areas = contagens.get("avisos_areas") or []
         if avisos_areas:
-            estado_busca["mensagem"] += " Atenção: " + " | ".join(avisos_areas)
+            estado_busca["mensagem"] += " Atención: " + " | ".join(avisos_areas)
 
         status_final = "concluido"
         logger.info("busca concluída: %s", contagens)
 
     except Exception:
         logger.exception("erro inesperado durante a busca")
-        estado_busca["mensagem"] = "Ocorreu um erro inesperado. Veja detalhes em logs/prospeccao.log."
+        estado_busca["mensagem"] = "Ocurrió un error inesperado. Consulta los detalles en logs/prospeccao.log."
     finally:
         estado_busca["rodando"] = False
         estado_busca["etapa"] = ""
@@ -613,7 +613,7 @@ def _rodar_analise_instagram_em_background(post_id, post_url, nicho_alvo=None, a
     retomada = bool(arquivo_comentarios)
     estado_instagram["rodando"] = True
     estado_instagram["mensagem"] = (
-        "Retomando análise de onde parou..." if retomada else "Extraindo comentários do post..."
+        "Retomando el análisis donde se quedó..." if retomada else "Extrayendo los comentarios del post..."
     )
     estado_instagram["etapa"] = "raspando"
     estado_instagram["perfis_encontrados"] = 0
@@ -656,7 +656,7 @@ def _rodar_analise_instagram_em_background(post_id, post_url, nicho_alvo=None, a
                 marcar_erro(str(erro))
                 return
             except Exception as erro:
-                marcar_erro(f"Erro ao acessar o post (pode ser privado, removido, ou rate limit): {erro}")
+                marcar_erro(f"Error al acceder al post (puede ser privado, haber sido eliminado o por límite de solicitudes): {erro}")
                 return
 
             # guarda o caminho do JSON raspado: é o que permite retomar esta
@@ -673,7 +673,7 @@ def _rodar_analise_instagram_em_background(post_id, post_url, nicho_alvo=None, a
 
         dados_comentarios = json.loads(Path(caminho_comentarios).read_text(encoding="utf-8"))
 
-        estado_instagram["mensagem"] = "Enriquecendo perfis dos autores dos comentários..."
+        estado_instagram["mensagem"] = "Enriqueciendo los perfiles de quienes comentaron..."
         estado_instagram["etapa"] = "enriquecendo"
         _atualizar_job(_job_id_instagram, etapa="enriquecendo")
 
@@ -697,13 +697,13 @@ def _rodar_analise_instagram_em_background(post_id, post_url, nicho_alvo=None, a
 
         dados_enriquecidos = json.loads(Path(caminho_enriquecido).read_text(encoding="utf-8"))
 
-        estado_instagram["mensagem"] = "Classificando perfis com IA..."
+        estado_instagram["mensagem"] = "Clasificando perfiles con IA..."
         estado_instagram["etapa"] = "classificando"
         _atualizar_job(_job_id_instagram, etapa="classificando")
         total_perfis = len(dados_enriquecidos["perfis"])
         classificacoes = {}
         for indice, perfil in enumerate(dados_enriquecidos["perfis"], start=1):
-            estado_instagram["mensagem"] = f"Classificando perfil {indice} de {total_perfis}: @{perfil.get('username')}"
+            estado_instagram["mensagem"] = f"Clasificando perfil {indice} de {total_perfis}: @{perfil.get('username')}"
             if perfil.get("is_private"):
                 continue  # mesma regra do prompt manual: descarta privados sem gastar chamada de IA
             if perfil.get("erro"):
@@ -721,9 +721,9 @@ def _rodar_analise_instagram_em_background(post_id, post_url, nicho_alvo=None, a
                 classificacao = classificacoes.get(perfil["username"], {})
                 tem_site_proprio = ia.perfil_tem_site_proprio(perfil)
                 observacoes = (
-                    f"Perfil não avaliado - falha na coleta: {perfil['erro']}"
+                    f"Perfil no evaluado - falló la recolección: {perfil['erro']}"
                     if perfil.get("erro")
-                    else "Perfil ignorado automaticamente - já tem site próprio na bio."
+                    else "Perfil ignorado automáticamente: ya tiene sitio propio en la bio."
                     if tem_site_proprio
                     else None
                 )
@@ -830,13 +830,13 @@ def _rodar_analise_instagram_em_background(post_id, post_url, nicho_alvo=None, a
         finally:
             conexao.close()
 
-        estado_instagram["mensagem"] = f"Análise concluída: {len(dados_enriquecidos['perfis'])} perfil(is) encontrado(s)."
+        estado_instagram["mensagem"] = f"Análisis terminado: {len(dados_enriquecidos['perfis'])} perfil(es) encontrado(s)."
         status_final = "concluido"
         logger.info("análise do Instagram concluída para post_id=%s", post_id)
 
     except Exception:
         logger.exception("erro inesperado na análise do Instagram")
-        marcar_erro("Ocorreu um erro inesperado. Veja detalhes em logs/prospeccao.log.")
+        marcar_erro("Ocurrió un error inesperado. Consulta los detalles en logs/prospeccao.log.")
     finally:
         estado_instagram["rodando"] = False
         estado_instagram["etapa"] = ""

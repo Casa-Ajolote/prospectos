@@ -11,7 +11,7 @@ export function ThemeToggle() {
       variant="outline"
       size="icon"
       onClick={alternar}
-      aria-label="Alternar tema claro/escuro"
+      aria-label="Cambiar entre tema claro y oscuro"
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.span

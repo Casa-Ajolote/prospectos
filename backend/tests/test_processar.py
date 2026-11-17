@@ -122,7 +122,7 @@ class TestAvaliarSite:
 
         situacao, problemas = processar.avaliar_site("https://naoexiste.com.br")
         assert situacao == "ruim"
-        assert any("fora do ar" in p for p in problemas)
+        assert any("sitio caído (no abre)" in p for p in problemas)
 
     def test_site_com_erro_http_e_ruim(self, monkeypatch):
         import requests
@@ -178,8 +178,8 @@ class TestAvaliarSite:
 
         situacao, problemas = processar.avaliar_site("sitesohttp.com.br")
         assert situacao == "ruim"
-        assert any("sem HTTPS" in p for p in problemas)
-        assert not any("fora do ar" in p for p in problemas)
+        assert any("sin HTTPS" in p for p in problemas)
+        assert not any("caído" in p for p in problemas)
         # https é tentado 2x (retentativa transitória) antes do fallback pra http
         assert urls_tentadas == [
             "https://sitesohttp.com.br", "https://sitesohttp.com.br", "http://sitesohttp.com.br",
@@ -196,7 +196,7 @@ class TestAvaliarSite:
 
         situacao, problemas = processar.avaliar_site("dominioquebrado.com.br")
         assert situacao == "ruim"
-        assert any("fora do ar" in p for p in problemas)
+        assert any("sitio caído (no abre)" in p for p in problemas)
 
     def test_conteudo_misto_em_pagina_https(self, monkeypatch):
         import requests
@@ -209,7 +209,7 @@ class TestAvaliarSite:
 
         situacao, problemas = processar.avaliar_site("https://site.com.br")
         assert situacao == "ruim"
-        assert any("conteúdo misto" in p for p in problemas)
+        assert any("contenido mixto" in p for p in problemas)
 
     def test_link_http_de_navegacao_nao_e_conteudo_misto(self, monkeypatch):
         """<a href=http://...> é só um link externo - não carrega recurso, não é misto."""
@@ -236,7 +236,7 @@ class TestAvaliarSite:
         situacao, problemas = processar.avaliar_site("https://site.com.br")
         assert situacao == "ruim"
         assert any("SSL" in p for p in problemas)
-        assert any("fora do ar" in p for p in problemas)
+        assert any("sitio caído (no abre)" in p for p in problemas)
 
     def test_site_lento_mas_funcional_e_ruim(self, monkeypatch):
         """Site que 'funciona mas demora' agora é lead - antes passava como ok."""
@@ -268,7 +268,7 @@ class TestAvaliarSite:
 
         situacao, problemas = processar.avaliar_site("https://site.com.br")
         assert situacao == "ruim"
-        assert any("vazia" in p for p in problemas)
+        assert any("página casi vacía" in p for p in problemas)
 
 
 class TestChecagemDeOnlineInteligente:
@@ -304,7 +304,7 @@ class TestChecagemDeOnlineInteligente:
 
         situacao, problemas = processar.avaliar_site("https://dominio-abandonado.com.br")
         assert situacao == "ruim"
-        assert any("domínio não encontrado" in p for p in problemas)
+        assert any("dominio no encontrado" in p for p in problemas)
         assert len(tentativas) == 1  # DNS morto é definitivo, não tenta de novo
 
 
@@ -327,19 +327,19 @@ class TestChecklistDoSite:
     def test_site_completo_tem_tudo(self):
         checklist, _ano = processar.montar_checklist_site(HTML_COMPLETO, "https://sorriso.com.br/")
         assert checklist["falta"] == []
-        assert "botão de WhatsApp" in checklist["tem"]
-        assert "telefone clicável" in checklist["tem"]
-        assert "fotos do negócio" in checklist["tem"]
-        assert "descrição para aparecer no Google" in checklist["tem"]
+        assert "botón de WhatsApp" in checklist["tem"]
+        assert "teléfono con clic para llamar" in checklist["tem"]
+        assert "fotos del negocio" in checklist["tem"]
+        assert "descripción para aparecer en Google" in checklist["tem"]
 
     def test_site_pelado_falta_quase_tudo(self):
         html = "<html><head><title>Home</title></head><body><p>oi</p></body></html>"
         checklist, _ano = processar.montar_checklist_site(html, "https://x.com.br/")
-        assert "botão de WhatsApp" in checklist["falta"]
-        assert "telefone clicável" in checklist["falta"]
-        assert "fotos do negócio" in checklist["falta"]
-        assert "título descritivo na aba" in checklist["falta"]  # "Home" não conta
-        assert "descrição para aparecer no Google" in checklist["falta"]
+        assert "botón de WhatsApp" in checklist["falta"]
+        assert "teléfono con clic para llamar" in checklist["falta"]
+        assert "fotos del negocio" in checklist["falta"]
+        assert "título descriptivo en la pestaña" in checklist["falta"]  # "Home" não conta
+        assert "descripción para aparecer en Google" in checklist["falta"]
 
     def test_copyright_antigo_vira_problema(self, monkeypatch):
         import requests
@@ -372,7 +372,7 @@ class TestDetectorDeConstrutor:
 
         situacao, problemas = processar.avaliar_site("https://clinica.wixsite.com/inicio")
         assert situacao == "ruim"
-        assert any("construtor pronto (Wix)" in p for p in problemas)
+        assert any("constructor de plantillas (Wix)" in p for p in problemas)
 
     def test_detecta_wix_pelo_html(self, monkeypatch):
         import requests
@@ -645,6 +645,21 @@ class TestExtrairNichoECidade:
         assert extrair_nicho_e_cidade("designer de embalagens em Curitiba") == (
             "designer de embalagens",
             "Curitiba",
+        )
+
+    def test_separador_en_espanhol(self):
+        assert extrair_nicho_e_cidade("clínica dental en Cancún") == ("clínica dental", "Cancún")
+
+    def test_en_espanhol_usa_ultima_ocorrencia(self):
+        assert extrair_nicho_e_cidade("abogado especializado en divorcios en Mérida") == (
+            "abogado especializado en divorcios",
+            "Mérida",
+        )
+
+    def test_mistura_en_e_em_usa_a_ultima(self):
+        assert extrair_nicho_e_cidade("especialista en uñas em São Paulo") == (
+            "especialista en uñas",
+            "São Paulo",
         )
 
     def test_sem_padrao_em_retorna_tudo_como_nicho(self):
