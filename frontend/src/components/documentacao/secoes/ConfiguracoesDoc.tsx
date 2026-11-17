@@ -29,7 +29,7 @@ export function ConfiguracoesDoc() {
 
       <DocH2>Cómo funciona el respaldo entre proveedores</DocH2>
       <DocList>
-        <li>Intenta con los proveedores en este orden: Gemini → Groq → NVIDIA.</li>
+        <li>Intenta con los proveedores en este orden: Anthropic (Claude) → Gemini → Groq → NVIDIA.</li>
         <li>Se salta sin avisar cualquier proveedor que no tenga clave configurada.</li>
         <li>
           Si un proveedor llegó a su límite de cuota hace poco, queda en
